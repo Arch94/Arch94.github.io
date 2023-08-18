@@ -1,0 +1,682 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Arch Sun">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="currentColor表示“当前的标签所继承的文字颜色”。 实战1：背景色镂空技术去年介绍过“CSS背景色镂空技术”，可以方便控制图标的颜色，很赞的想法。此文章对应demo可以轻戳这里访问。这种设计的目的就是鼠标hover时候，图标可以跟着文字一起变色。如果不考虑兼容性问题，我们可以稍稍改造下，使其实现更加简单： 123456.icon &amp;#123; display: inline-block;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="有用的css知识收集">
+<meta property="og:url" content="http://arch94.github.io/2017/12/07/%E6%9C%89%E7%94%A8%E7%9A%84css%E7%9F%A5%E8%AF%86%E6%94%B6%E9%9B%86/index.html">
+<meta property="og:site_name" content="Arch&#39;s Blog">
+<meta property="og:description" content="currentColor表示“当前的标签所继承的文字颜色”。 实战1：背景色镂空技术去年介绍过“CSS背景色镂空技术”，可以方便控制图标的颜色，很赞的想法。此文章对应demo可以轻戳这里访问。这种设计的目的就是鼠标hover时候，图标可以跟着文字一起变色。如果不考虑兼容性问题，我们可以稍稍改造下，使其实现更加简单： 123456.icon &amp;#123; display: inline-block;">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2017-12-07T06:42:12.000Z">
+<meta property="article:modified_time" content="2023-08-18T07:53:45.260Z">
+<meta property="article:author" content="Arch Sun">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>有用的css知识收集 - Arch&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"arch94.github.io","root":"/","version":"1.9.5-a","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Fluid</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="有用的css知识收集"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2017-12-07 14:42" pubdate>
+          2017年12月7日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          3.2k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          27 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">有用的css知识收集</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p><strong>currentColor</strong><br>表示“当前的标签所继承的文字颜色”。</p>
+<p><strong>实战1：背景色镂空技术</strong>去年介绍过“<a target="_blank" rel="noopener" href="http://www.zhangxinxu.com/wordpress/?p=3545">CSS背景色镂空技术</a>”，可以方便控制图标的颜色，很赞的想法。此文章对应demo可以<a target="_blank" rel="noopener" href="http://www.zhangxinxu.com/study/201307/background-color-insert-background-image.html">轻戳这里</a>访问。<br>这种设计的目的就是鼠标hover时候，图标可以跟着文字一起变色。如果不考虑兼容性问题，我们可以稍稍改造下，使其实现更加简单：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs sh">.icon &#123; <br>display: inline-block; width: 16px;<br>height: 20px; <br>background-image: url(../201307/sprite_icons.png); <br>background-color: currentColor; /* 该颜色控制图标的颜色 */<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>于是，我们想要鼠标hover文字链接，其图标颜色要跟着一起变化，只要改变文字颜色就可以了.</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">.<span class="hljs-built_in">link</span>:hover &#123; color: <span class="hljs-comment">#333; &#125;/* 虽然改变的是文字颜色，但是图标颜色也一起变化了 */</span><br></code></pre></td></tr></table></figure>
+<p>HTML结构如下：<br><code>&lt;a href=&quot;##&quot; class=&quot;link&quot;&gt;&lt;i class=&quot;icon icon1&quot;&gt;&lt;/i&gt;返回&lt;/a&gt;</code><br>于是鼠标hover就是<code>#333</code><br>因为<code>currentColor</code>继承文本颜色这个属性,<code>color</code>的改变会随之改变<code>background-color</code></p>
+<h2 id="meta"><a href="#meta" class="headerlink" title="meta"></a>meta</h2><hr>
+<p><code> &lt;meta http-equiv=&quot;x-ua-comatible&quot; content=&quot;ie=edge&quot;&gt;</code></p>
+<ol>
+<li>它代表ie文档的兼容性，告诉文档在<strong>ie</strong>下的兼容模式，</li>
+<li>它是为了兼容一些在ie8下显示不正常，但在老版本浏览器下显示正常的模式</li>
+<li>通过content  可以告诉 ie浏览器 你可以模拟 ie7的形式或者ie8或者ie9、ie11的形式显示网页</li>
+<li>比如<code>content=&quot;IE=EmulateIE8&quot;</code>以ie8的模式渲染页面</li>
+<li>ie&#x3D;edge是为了强制ie浏览器以最新的模式渲染页面，能多新，有多新，<strong>（但如果浏览器最高ie8，那也只能用ie8的模式渲染）</strong>。</li>
+</ol>
+<h2 id="移动端meta必备"><a href="#移动端meta必备" class="headerlink" title="移动端meta必备"></a>移动端meta必备</h2><p><code>&lt;meta name=&quot;view-port&quot; content=&quot;width=device-width,initial-scale=1&quot;&gt;</code></p>
+<h2 id="对于ie低版本兼容"><a href="#对于ie低版本兼容" class="headerlink" title="对于ie低版本兼容"></a>对于ie低版本兼容</h2><ul>
+<li>css里 \0  大家都懂</li>
+<li>html里<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs sh">&lt;!--[<span class="hljs-keyword">if</span> lte IE8]&gt;<br>&lt;p&gt;如果浏览器小于等于ie8，那么我提示你该升级了&lt;/p&gt;<br>&lt;![endif]--&gt;<br></code></pre></td></tr></table></figure></li>
+<li>格式不多说  gt 大于、lt小于、gte大于等于、lte小于等于</li>
+</ul>
+<h2 id="px-em-rem"><a href="#px-em-rem" class="headerlink" title="px em rem"></a>px em rem</h2><ol>
+<li>px像素</li>
+<li>em 相对父元素 ，如果没设会一直往上找，很强大但会导致混乱</li>
+<li>rem 相对html，但rem ie678不支持</li>
+</ol>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs sh">html &#123;<br>font-size: 62.5%;<br>color: <span class="hljs-comment">#222;</span><br>&#125;<br></code></pre></td></tr></table></figure>
+<p>如此一个rem会是10px </p>
+<h2 id="取消选中"><a href="#取消选中" class="headerlink" title="取消选中"></a>取消选中</h2><p>css3属性  顺序不能乱，不然谷歌没有，火狐有</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs sh">::-moz-selection&#123;<br>background-color: <span class="hljs-comment">#b3d4fc;</span><br>text-shadow: none;<br>&#125;<br>::selection&#123;<br>background-color: <span class="hljs-comment">#b3d4fc;</span><br>text-shadow: none;<br>&#125;<br></code></pre></td></tr></table></figure>
+<h2 id="隐藏文字"><a href="#隐藏文字" class="headerlink" title="隐藏文字"></a>隐藏文字</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs sh">.text-hide&#123;<br>font:0/0 a;<br>color: transparent;<br>text-shadow: none;<br>background-color: transparent;<br>border: 0;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>注意其中的text-hide 是为了隐藏文字，方便seo识别图片</p>
+<h2 id="清除浮动"><a href="#清除浮动" class="headerlink" title="清除浮动"></a>清除浮动</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs sh">.clearfix:after,.clearfix:before&#123;<br>content:<span class="hljs-string">&#x27; &#x27;</span>;<br>display: table;<br>&#125;<br>.clearfix:after&#123;<br>clear:both;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>这种方法可以防止margin的叠加</p>
+<h2 id="before-利用"><a href="#before-利用" class="headerlink" title="before 利用"></a>before 利用</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs sh">.notice a:first-child:before&#123;<br>content: <span class="hljs-string">&#x27;最新公告：\00a0\00a0&#x27;</span>;<br>color: <span class="hljs-comment">#aaa;</span><br>&#125;<br></code></pre></td></tr></table></figure>
+<p>其中<code>\00a0\00a0</code>是不换行的空白字符,因为content没法用<code>&amp;nbsp</code>添加空格</p>
+<h2 id="文字不换行-多出省略"><a href="#文字不换行-多出省略" class="headerlink" title="文字不换行,多出省略"></a>文字不换行,多出省略</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs sh">.notice a:first-child&#123;<br>text-overflow: ellipsis;<br>overflow: hidden;<br>white-space: nowrap;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="设备信息"><a href="#设备信息" class="headerlink" title="设备信息"></a>设备信息</h2><p>用户代理字符串在控制台输入<code>navigator.userAgent</code>获得相关设备信息</p>
+<h2 id="文字超出隐藏"><a href="#文字超出隐藏" class="headerlink" title="文字超出隐藏"></a>文字超出隐藏</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs sh">&#123;<br>overflow: hidden;<br>white-space: nowrap;<br>text-overflow: ellipsis;<br>&#125;<br></code></pre></td></tr></table></figure>
+<h2 id="图标随文字变色设计"><a href="#图标随文字变色设计" class="headerlink" title="图标随文字变色设计"></a>图标随文字变色设计</h2><p><strong>背景色镂空技术</strong> 利用<br><strong>currentColor</strong>表示“当前的标签所继承的文字颜色”。<br>这种设计的目的就是鼠标hover时候，图标可以跟着文字一起变色。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs sh">.icon &#123;<br>display: inline-block;<br>width: 16px; height: 20px;<br>background-image: url(../201307/sprite_icons.png);<br>background-color: currentColor; /* 该颜色控制图标的颜色 */<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>于是，我们想要鼠标hover文字链接，其图标颜色要跟着一起变化，只要改变文字颜色就可以了：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs sh">.<span class="hljs-built_in">link</span>:hover &#123; <br>color: <span class="hljs-comment">#333; </span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>因为<code>currentColor</code>继承文本颜色这个属性,<code>color</code>的改变会随之改变<code>background-color</code></p>
+<h2 id="margin-top溢出问题："><a href="#margin-top溢出问题：" class="headerlink" title="margin-top溢出问题："></a>margin-top溢出问题：</h2><p>给元素盒子一个垂直外边距margin-top，父元素盒子也会往下走margin-top的值。<br>有以下几点解决方案<br>1.修改父元素高度，增加padding-top                     好用，但间距变成margin+padding<br>2.为父元素添加overflow：hidden                            特别好用，相当于子元素向下移，但范围和子元素大小要注意<br>3.为父元素或者子元素申明浮动（float：left）            可以用，但会改变父子的定位，会浮起来<br>4.为父元素添加border                                            好用，但会改变边框</p>
+<h2 id="毛玻璃特效"><a href="#毛玻璃特效" class="headerlink" title="毛玻璃特效"></a>毛玻璃特效</h2><p>css代码</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs sh">.blur &#123;    <br>-webkit-filter: blur(20px); /* Chrome, Opera */<br>-moz-filter: blur(20px);<br>-ms-filter: blur(20px);    <br>filter: blur(20px);    <br>&#125;<br>/**--图片上的div--**/<br>.top-bg&#123;<br>position: absolute;<br>top: 0;<br>left: 0;<br>width: 100%;<br>height: 100%;<br>z-index: -1;<br>overflow: hidden;<br>&#125;<br>.top-bg img&#123;<br>transform: scale(4.0);<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>html代码</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs sh">&lt;div&gt;  &lt;!--父层--&gt;<br>&lt;div class=<span class="hljs-string">&quot;top-bg blur&quot;</span>&gt; &lt;!--背景层--&gt;<br>![](./img/37403260_p0.png)  &lt;!-- 图片层--&gt;<br>&lt;/div&gt;<br>&lt;/div&gt;<br></code></pre></td></tr></table></figure>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/css/" class="category-chain-item">css</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>有用的css知识收集</div>
+      <div>http://arch94.github.io/2017/12/07/有用的css知识收集/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Arch Sun</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2017年12月7日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2018/01/12/angular4%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E6%95%B4%E7%90%86%EF%BC%88%E5%9B%9B%EF%BC%89%E7%BB%84%E4%BB%B6%E9%97%B4%E9%80%9A%E8%AE%AF%E3%80%81%E7%AE%A1%E9%81%93/" title="angular4学习笔记整理（四）组件间通讯、管道">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">angular4学习笔记整理（四）组件间通讯、管道</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
