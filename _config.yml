@@ -3,7 +3,7 @@
 ## Source: https://github.com/hexojs/hexo/
 
 # Site
-title: sunqx的blog
+title: Arch's Blog
 subtitle: 山堆再高终有限,水流再细无时休
 description: 前端geek
 author: Sunqx
@@ -78,9 +78,8 @@ theme: material
 ## Docs: https://hexo.io/docs/deployment.html
 deploy:
   type: git
-  repository: https://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@github.com/Arch94/Arch94.github.io
+  repository: https://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@github.com/Arch94/Arch94.github.io.git
   branch: gh-pages
-  token: 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
 # $ npm install hexo-generator-searchdb --save
 search:
   path: search.xml
