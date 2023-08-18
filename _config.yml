@@ -78,8 +78,8 @@ theme: material
 ## Docs: https://hexo.io/docs/deployment.html
 deploy:
   type: git
-  repository: https://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@github.com/Arch94/Arch94.github.io.git
-  branch: gh-pages
+  repository: git@github.com:Arch94/Arch94.github.io.git
+  branch: main
 # $ npm install hexo-generator-searchdb --save
 search:
   path: search.xml
