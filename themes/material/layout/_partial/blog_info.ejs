@@ -1,0 +1,285 @@
+<style>
+.mdl-card{
+    position: relative;
+    /* background: linear-gradient(to bottom right, #50A3A2, #53E3A6); */
+
+}
+.bg-bubbles {
+    position: absolute;
+    /* // 使气泡背景充满整个屏幕； */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* // 如果元素内容超出给定的宽度和高度，overflow 属性可以确定是否显示滚动条等行为； */
+    overflow: hidden;
+}
+.bg-bubbles li{
+	position: absolute;
+	/* // bottom 的设置是为了营造出气泡从页面底部冒出的效果； */
+	bottom: -160px;
+	/* // 默认的气泡大小； */
+	width: 40px;
+	height: 40px;
+	background-color: rgba(255, 255, 255, 0.15);
+	list-style: none;
+	/* // 使用自定义动画使气泡渐现、上升和翻滚； */
+	animation: square 15s infinite;
+    transition-timing-function: linear;
+}
+
+/*  自定义 square 动画； */
+@keyframes square {
+  0% {
+    opacity: 0.5;
+    transform: translateY(0px) rotate(45deg);
+  }
+  /* 25% {
+    opacity: 0.75;
+    transform: translateY(-300px) rotate(90deg)
+  } */
+  /* 50% {
+    opacity: 1;
+    transform: translateY(-450px) rotate(135deg);
+  } */
+  100% {
+    opacity: 1;
+    transform: translateY(-800px) rotate(180deg);
+  }
+}
+/* // 分别设置每个气泡不同的位置、大小、透明度和速度，以显得有层次感；    */
+.bg-bubbles li:nth-child(1) {
+    left: 10%;
+    width: 90px;
+	height: 90px;
+}
+.bg-bubbles li:nth-child(2) {
+	left: 20%;
+	width: 80px;
+	height: 80px;
+	animation-delay: 2s;
+	animation-duration: 7s;
+}
+.bg-bubbles li:nth-child(3) {
+    width: 70px;
+	height: 70px;
+	left: 65%;
+	animation-delay: 4s;
+}
+.bg-bubbles li:nth-child(4) {
+	left: 40%;
+	width: 60px;
+	height: 60px;
+	animation-duration: 8s;
+	background-color: rgba(255, 255, 255, 0.3);
+}
+.bg-bubbles li:nth-child(5) {
+    width: 80px;
+	height: 80px;
+	left: 70%;
+}
+.bg-bubbles li:nth-child(6) {
+	left: 40%;
+	width: 60px;
+	height: 60px;
+	animation-delay: 3s;
+	background-color: rgba(255, 255, 255, 0.2);
+}
+.bg-bubbles li:nth-child(7) {
+	left: 32%;
+	width: 50px;
+	height: 50px;
+	animation-delay: 2s;
+}
+.bg-bubbles li:nth-child(8) {
+	left: 5%;
+	width: 75px;
+	height: 75px;
+	animation-delay: 4s;
+	animation-duration: 15s;
+}
+.bg-bubbles li:nth-child(9) {
+	left: 25%;
+	width: 10px;
+	height: 10px;
+	animation-delay: 2s;
+	animation-duration: 12s;
+	background-color: rgba(255, 255, 255, 0.3);
+}
+.bg-bubbles li:nth-child(10) {
+	left: 85%;
+	width: 160px;
+	height: 160px;
+	animation-delay: 5s;
+}
+.center-span{
+    font-size: 2rem;
+}
+
+</style>
+
+<!-- Blog info -->
+<div class="mdl-card <% if(theme.card_elevation) { %><%= 'mdl-shadow--' + theme.card_elevation + 'dp' %><% } %> something-else mdl-cell mdl-cell--8-col mdl-cell--4-col-desktop index-top-block">
+
+    <!-- Search -->
+    <%- partial('_partial/Paradox-search') %>
+
+    <!-- LOGO -->
+    <div class="something-else-logo mdl-color--white mdl-color-text--grey-600">
+        <!-- <a href="<%= theme.url.logo || '#' %>" target="_blank">
+            <img src="<%= theme.img.logo %>" alt="logo" />
+        </a> -->
+        <span class="center-span">My technology</span>
+    </div>
+    <ul class="bg-bubbles">
+        <li>
+            <img width="100%" height="100%" src="/img/tec/angular.svg" alt="angular">
+        </li>
+        <li>
+            <img width="100%" height="100%" alt="react" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9Ii0xMS41IC0xMC4yMzE3NCAyMyAyMC40NjM0OCI+CiAgPHRpdGxlPlJlYWN0IExvZ288L3RpdGxlPgogIDxjaXJjbGUgY3g9IjAiIGN5PSIwIiByPSIyLjA1IiBmaWxsPSIjNjFkYWZiIi8+CiAgPGcgc3Ryb2tlPSIjNjFkYWZiIiBzdHJva2Utd2lkdGg9IjEiIGZpbGw9Im5vbmUiPgogICAgPGVsbGlwc2Ugcng9IjExIiByeT0iNC4yIi8+CiAgICA8ZWxsaXBzZSByeD0iMTEiIHJ5PSI0LjIiIHRyYW5zZm9ybT0icm90YXRlKDYwKSIvPgogICAgPGVsbGlwc2Ugcng9IjExIiByeT0iNC4yIiB0cmFuc2Zvcm09InJvdGF0ZSgxMjApIi8+CiAgPC9nPgo8L3N2Zz4K" />
+        </li>
+        <li>
+            <img width="100%" height="100%" src="/img/tec/vue.png" alt="vue">
+        </li>
+        <li>
+            <img width="100%" height="100%" src="/img/tec/css3.png" alt="css3">
+        </li>
+        <li>
+            <img width="100%" height="100%" src="/img/tec/html5.png" alt="html5">
+        </li>
+        <li>
+            <img width="100%" height="100%" src="/img/tec/js.png" alt="js">
+        </li>
+        <li>
+            <img width="100%" height="100%" src="/img/tec/cordova.png" alt="cordova">
+        </li>
+        <li>
+            <img width="100%" height="100%" src="/img/tec/ionic.png" alt="cordova">
+        </li>
+    </ul>
+    
+        
+
+    <!-- Infomation -->
+    <div class="mdl-card__supporting-text meta meta--fill mdl-color-text--grey-600">
+        <!-- Blog Title -->
+        <div>
+            <strong><%= config.title %></strong>
+        </div>
+        <div class="section-spacer"></div>
+
+        <!-- Pages -->
+        <!-- <button id="show-pages-button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon">
+            <i class="material-icons" role="presentation">view_carousel</i>
+            <span class="visuallyhidden">Pages</span>
+        </button>
+        <ul class="mdl-menu mdl-js-menu mdl-menu--bottom-right" for="show-pages-button">
+            <% for (var i in theme.sidebar.pages) { %>
+                <a class="index_share-link" href="<%= theme.sidebar.pages[i].link || '#' %>" title="<%= i %>">
+                    <li class="mdl-menu__item mdl-js-ripple-effect">
+                        <%= i %>
+                    </li>
+                </a>
+            <% } %>
+        </ul> -->
+
+        <!-- Menu -->
+        <button id="menubtn" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon">
+            <i class="material-icons" role="presentation">more_vert</i>
+            <span class="visuallyhidden">show menu</span>
+        </button>
+        <ul class="mdl-menu mdl-js-menu mdl-menu--bottom-right" for="menubtn">
+            <% if(theme.busuanzi.all_site_uv === true) { %>
+                <!-- All Site UV -->
+                <a class="index_share-link" href="#">
+                    <li class="mdl-menu__item mdl-js-ripple-effect">
+                        <span id="busuanzi_container_site_uv">
+                            <span id="busuanzi_value_site_uv"></span>&nbsp;<%= __('post.views') %>
+                        </span>
+                    </li>
+                </a>
+            <% } %>
+
+            <% if(theme.url.rss) { %>
+                <a class="index_share-link" href="<%= theme.url.rss || '#' %>">
+                    <li class="mdl-menu__item mdl-js-ripple-effect">
+                        <%= __('share.article_rss') %>
+                    </li>
+                </a>
+            <% } %>
+
+            <% if(theme.sns_share.weibo === true) { %>
+                <a class="index_share-link" href="http://service.weibo.com/share/share.php?appkey=&title=<%= config.title %>&url=<%- config.url + config.root %>&pic=&searchPic=false&style=simple" target="_blank">
+                    <li class="mdl-menu__item mdl-js-ripple-effect">
+                        <%= __('share.toWeibo') %>
+                    </li>
+                </a>
+            <% } %>
+
+            <% if(theme.sns_share.twitter === true) { %>
+                <a class="index_share-link" href="https://twitter.com/intent/tweet?text=<%= config.title %>&url=<%- config.url + config.root %>&via=<%= config.author %>" target="_blank">
+                    <li class="mdl-menu__item mdl-js-ripple-effect">
+                        <%= __('share.toTwitter') %>
+                    </li>
+                </a>
+            <% } %>
+
+            <% if(theme.sns_share.facebook === true) { %>
+                <a class="index_share-link" href="https://www.facebook.com/sharer/sharer.php?u=<%= config.url + url_for(path) %>" target="_blank">
+                    <li class="mdl-menu__item mdl-js-ripple-effect">
+                        <%= __('share.toFacebook') %>
+                    </li>
+                </a>
+            <% } %>
+
+            <% if(theme.sns_share.googleplus === true) { %>
+                <a class="index_share-link" href="https://plus.google.com/share?url=<%- config.url + config.root %>" target="_blank">
+                    <li class="mdl-menu__item mdl-js-ripple-effect">
+                        <%= __('share.toGplus') %>
+                    </li>
+                </a>
+            <% } %>
+
+            <% if(theme.sns_share.linkedin === true) { %>
+                <a class="index_share-link" href="https://www.linkedin.com/shareArticle?mini=true&url=<%- config.url + config.root %>&title=<%= config.title %>" target="_blank">
+                    <li class="mdl-menu__item mdl-js-ripple-effect">
+                        <%= __('share.toLinkedIn') %>
+                    </li>
+                </a>
+            <% } %>
+
+            <% if(theme.sns_share.qq === true) { %>
+                <a class="post_share-link" href="http://connect.qq.com/widget/shareqq/index.html?site=<%= config.title %>&title=<%= config.title %>&summary=<%= config.description %>&pics=<%- config.url + theme.head.favicon %>&url=<%- config.url + config.root %>" target="_blank">
+                    <li class="mdl-menu__item">
+                        <%= __('share.toQQ') %>
+                    </li>
+                </a>
+            <% } %>
+
+            <% if(theme.sns_share.telegram === true) { %>
+                <a class="post_share-link" href="https://telegram.me/share/url?url=<%- config.url + config.root %>&text=<%= config.title %>" target="_blank">
+                    <li class="mdl-menu__item">
+                        <%= __('share.toTelegram') %>
+                    </li>
+                </a>
+            <% } %>
+        </ul>
+    </div>
+</div>
+
+<!-- <script type="text/javascript">
+     // Auto delete input content & placeholder
+     $(".search-input").blur(function() {
+        this.value = "";
+        this.placeholder="";
+    });
+
+    $(".search-input").keypress(function(e) {  
+        e.stopPropagation();
+        var searchText=$(this).val();
+        // 回车键事件  
+        if(e.which == 13 && searchText) {  
+            window.open('https://www.baidu.com/s?ie=utf-8&f=8&rsv_bp=1&rsv_idx=1&tn=baidu&wd='+searchText+'&oq=%25E5%25B1%25B1%25E5%25A0%2586%25E5%2586%258D%25E9%25AB%2598&rsv_pq=cd0f2b430000f670&rsv_t=fca1r2l6a1CwLH2zUO0KUYsfhBvFEvtaxDXBZC7tnnxGeYythHBkqwInvvw&rqlang=cn&rsv_enter=1&inputT=13552&rsv_sug3=51&rsv_sug1=36&rsv_sug7=101&rsv_sug2=0&rsv_sug4=14022')
+        }  
+    }); 
+</script> -->
