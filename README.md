@@ -4,6 +4,7 @@ I'm Arch, I am a front-end engineer.
 
 Experienced and dedicated Senior Front-end Engineer with six years of experience, proficient in all stages of advanced web development, professional cross-platform skills that can quickly develop applications across mini-programs, web, and app. Ability to effectively self-manage and deliver independent projects and collaborate in a team setting.
 
+[![我的 GitHub 数据](https://github-readme-stats.vercel.app/api?username=Arch94)]()
 ____
 
 ## ⚡ Technologies
@@ -33,3 +34,4 @@ Tools:
 ![Git](https://img.shields.io/badge/-Git-black?style=flat-square&logo=git)
 ![GitHub](https://img.shields.io/badge/-GitHub-181717?style=flat-square&logo=github)
 ![VSCode](https://img.shields.io/badge/-VSCode-007ACC?style=flat-square&logo=visual-studio-code&logoColor=white)
+
