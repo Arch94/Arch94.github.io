@@ -7,8 +7,8 @@
 
 <head>
   <meta charset="UTF-8">
-  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
-  <link rel="icon" href="/img/fluid.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/avatar.png">
+  <link rel="icon" href="/img/avatar.png">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   
@@ -16,23 +16,23 @@
   <meta name="author" content="Arch Sun">
   <meta name="keywords" content="">
   
-    <meta name="description" content="前两天买了一台百度云服务器花了11块钱，花了点时间学了下如何部署hexo博客以及一些服务器方面的配置，没用hexo推荐的方式部署。专门记一个文章。系统用的是centos，先上图和链接 博客地址sunqx的博客  步骤 先用hexo快捷搭建本地blog，再把项目上传到github  本地ssh无密码登陆远程服务器，把服务器的防火墙打开并配置指定端口才可以登陆 远程服务器配置 ssh key 后再把项">
+    <meta name="description" content="前两天买了一台百度云服务器花了11块钱，花了点时间学了下如何部署hexo博客以及一些服务器方面的配置，没用hexo推荐的方式部署。专门记一个文章。系统用的是centos，先上图和链接 博客地址 步骤 先用hexo快捷搭建本地blog，再把项目上传到github  本地ssh无密码登陆远程服务器，把服务器的防火墙打开并配置指定端口才可以登陆 远程服务器配置 ssh key 后再把项目从git clo">
 <meta property="og:type" content="article">
 <meta property="og:title" content="记一次hexo 博客上线 经验总结">
 <meta property="og:url" content="http://arch94.github.io/2018/12/03/%E8%AE%B0%E4%B8%80%E6%AC%A1hexo-%E5%8D%9A%E5%AE%A2%E4%B8%8A%E7%BA%BF-%E7%BB%8F%E9%AA%8C%E6%80%BB%E7%BB%93/index.html">
 <meta property="og:site_name" content="Arch&#39;s Blog">
-<meta property="og:description" content="前两天买了一台百度云服务器花了11块钱，花了点时间学了下如何部署hexo博客以及一些服务器方面的配置，没用hexo推荐的方式部署。专门记一个文章。系统用的是centos，先上图和链接 博客地址sunqx的博客  步骤 先用hexo快捷搭建本地blog，再把项目上传到github  本地ssh无密码登陆远程服务器，把服务器的防火墙打开并配置指定端口才可以登陆 远程服务器配置 ssh key 后再把项">
+<meta property="og:description" content="前两天买了一台百度云服务器花了11块钱，花了点时间学了下如何部署hexo博客以及一些服务器方面的配置，没用hexo推荐的方式部署。专门记一个文章。系统用的是centos，先上图和链接 博客地址 步骤 先用hexo快捷搭建本地blog，再把项目上传到github  本地ssh无密码登陆远程服务器，把服务器的防火墙打开并配置指定端口才可以登陆 远程服务器配置 ssh key 后再把项目从git clo">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/6114493-3d1caea56828ef4a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/6114493-9b765e356cd0a732.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://arch94.github.io/img/6114493-3d1caea56828ef4a.webp">
+<meta property="og:image" content="http://arch94.github.io/img/6114493-9b765e356cd0a732.webp">
 <meta property="article:published_time" content="2018-12-02T16:09:47.000Z">
-<meta property="article:modified_time" content="2023-08-18T07:53:45.260Z">
+<meta property="article:modified_time" content="2023-08-19T07:32:09.298Z">
 <meta property="article:author" content="Arch Sun">
-<meta property="article:tag" content="pm2">
 <meta property="article:tag" content="nginx">
+<meta property="article:tag" content="pm2">
 <meta property="article:tag" content="hexo">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://upload-images.jianshu.io/upload_images/6114493-3d1caea56828ef4a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta name="twitter:image" content="http://arch94.github.io/img/6114493-3d1caea56828ef4a.webp">
   
   
   
@@ -100,7 +100,7 @@
   <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
   <div class="container">
     <a class="navbar-brand" href="/">
-      <strong>Fluid</strong>
+      <strong>Arch&#39;s blog</strong>
     </a>
 
     <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
@@ -279,8 +279,7 @@
               <div class="markdown-body">
                 
                 <p>前两天买了一台百度云服务器花了11块钱，花了点时间学了下如何部署hexo博客以及一些服务器方面的配置，没用hexo推荐的方式部署。专门记一个文章。系统用的是centos，先上图和链接</p>
-<h2 id="博客地址"><a href="#博客地址" class="headerlink" title="博客地址"></a>博客地址</h2><p><a target="_blank" rel="noopener" href="http://www.sunqx.top:4000/">sunqx的博客</a></p>
-<p><img src="https://upload-images.jianshu.io/upload_images/6114493-3d1caea56828ef4a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" srcset="/img/loading.gif" lazyload alt="preview.png"></p>
+<h2 id="博客地址"><a href="#博客地址" class="headerlink" title="博客地址"></a>博客地址</h2><p><img src="/img/6114493-3d1caea56828ef4a.webp" srcset="/img/loading.gif" lazyload alt="preview.png"></p>
 <h2 id="步骤"><a href="#步骤" class="headerlink" title="步骤"></a>步骤</h2><ol>
 <li>先用hexo快捷搭建本地blog，再把项目上传到github </li>
 <li>本地ssh无密码登陆远程服务器，把服务器的防火墙打开并配置指定端口才可以登陆</li>
@@ -308,7 +307,7 @@
 <li>然后在连上<strong>远程服务器</strong> <code>cd ~/.ssh</code> ,编辑服务器端授权文件 <code>vi authorized_keys</code></li>
 <li>在在<strong>客户端</strong> 输入 <code>cat id_rsa.pub</code>将带有邮箱的公钥复制进去，再:wq!退出authorized_keys</li>
 <li>配置生效 <code>sudo service sshd restart</code> </li>
-<li>然后就可以直接通过 ssh <a href="mailto:&#114;&#111;&#111;&#x74;&#64;&#120;&#120;&#46;&#x78;&#120;&#46;&#120;&#120;&#46;&#x78;&#120;">&#114;&#111;&#111;&#x74;&#64;&#120;&#120;&#46;&#x78;&#120;&#46;&#120;&#120;&#46;&#x78;&#120;</a> 来免密码 登陆了</li>
+<li>然后就可以直接通过 ssh <a href="mailto:&#114;&#x6f;&#x6f;&#116;&#x40;&#x78;&#x78;&#x2e;&#x78;&#x78;&#46;&#120;&#120;&#x2e;&#120;&#x78;">&#114;&#x6f;&#x6f;&#116;&#x40;&#x78;&#x78;&#x2e;&#x78;&#x78;&#46;&#120;&#120;&#x2e;&#120;&#x78;</a> 来免密码 登陆了</li>
 </ol>
 <p>注意点:</p>
 <ul>
@@ -317,7 +316,7 @@
 <li>还有一个地方，每次ssh登陆输ip太过于麻烦，当然你用secureCRT这样的工具当我没说, <strong>在mac下面 可以配置快捷连接云服务器的命令</strong><br>– 在<code>sudo vim ~/.bashrc</code><br>– 新加 <code>alias ssh_baiduyun=&quot;ssh root@xx.xx.xx.xx&quot;</code><br>– <code>source .bashrc</code> 以后即可通过 <code>ssh_baiduyun</code> 连接服务器</li>
 <li>再重申一点 本地的 <code>id_rsa.pub</code> 对应的是 服务器上的 <code>authorized_keys</code>,两个复制错了就尴尬了</li>
 </ul>
-<h4 id="在服务器配置ssh并clone-git-项目"><a href="#在服务器配置ssh并clone-git-项目" class="headerlink" title="在服务器配置ssh并clone git 项目"></a>在服务器配置ssh并clone git 项目</h4><p>生成服务器端公钥 和本地一样<br><code>cd ~/.ssh</code><br><code>ssh-keygen -t rsa -b 4096 -C &quot;931035063@qq.com&quot;</code><br><code>eval &quot;$(ssh-agent -s)&quot;</code><br><code>ssh-add ~/.ssh/id_rsa</code><br>生效,centos 下<code>service sshd restart</code><br>把  <code>id_rsa.pub</code> 里面的内容 放到git 账户里面ssh 配置里<br><img src="https://upload-images.jianshu.io/upload_images/6114493-9b765e356cd0a732.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" srcset="/img/loading.gif" lazyload alt="Screenshot 2018-12-02_23-25-37.png"><br><strong>注意！！</strong> 在服务器里你准备clone 项目的文件夹里 先用ssh clone 一遍 <code>git@github.com:SHpoi/my-blog.git</code> 第一次git clone 会有确认项，不然后面用pm2部署老是会遇到一个拉取项目为空的报错。</p>
+<h4 id="在服务器配置ssh并clone-git-项目"><a href="#在服务器配置ssh并clone-git-项目" class="headerlink" title="在服务器配置ssh并clone git 项目"></a>在服务器配置ssh并clone git 项目</h4><p>生成服务器端公钥 和本地一样<br><code>cd ~/.ssh</code><br><code>ssh-keygen -t rsa -b 4096 -C &quot;931035063@qq.com&quot;</code><br><code>eval &quot;$(ssh-agent -s)&quot;</code><br><code>ssh-add ~/.ssh/id_rsa</code><br>生效,centos 下<code>service sshd restart</code><br>把  <code>id_rsa.pub</code> 里面的内容 放到git 账户里面ssh 配置里<br><img src="/img/6114493-9b765e356cd0a732.webp" srcset="/img/loading.gif" lazyload alt="Screenshot 2018-12-02_23-25-37.png"><br><strong>注意！！</strong> 在服务器里你准备clone 项目的文件夹里 先用ssh clone 一遍 <code>git@github.com:SHpoi/my-blog.git</code> 第一次git clone 会有确认项，不然后面用pm2部署老是会遇到一个拉取项目为空的报错。</p>
 <h4 id="在服务器配置nodejs环境"><a href="#在服务器配置nodejs环境" class="headerlink" title="在服务器配置nodejs环境"></a>在服务器配置nodejs环境</h4><p>服务器配置nodejs 用的是nvm，安装nvm</p>
 <figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">wget -qO- https:<span class="hljs-regexp">//</span>raw.githubusercontent.com<span class="hljs-regexp">/creationix/</span>nvm<span class="hljs-regexp">/v0.33.2/i</span>nstall.sh | bash<br></code></pre></td></tr></table></figure>
 <p><strong>nvm 安装以后重新连接云服务器</strong>，不然环境变量不会生效<br>nvm安装nodejs，依次执行以下命令</p>
@@ -393,9 +392,9 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/pm2/" class="print-no-link">#pm2</a>
-      
         <a href="/tags/nginx/" class="print-no-link">#nginx</a>
+      
+        <a href="/tags/pm2/" class="print-no-link">#pm2</a>
       
         <a href="/tags/hexo/" class="print-no-link">#hexo</a>
       
@@ -454,9 +453,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2023/08/18/hello-world/" title="Hello World">
+                      <a href="/2023/08/19/Nginx%E5%AD%A6%E4%B9%A0/" title="Nginx配置学习">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">Hello World</span>
+                        <span class="hidden-mobile">Nginx配置学习</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
