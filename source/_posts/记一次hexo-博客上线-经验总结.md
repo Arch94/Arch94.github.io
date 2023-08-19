@@ -11,9 +11,7 @@ tags:
 
 前两天买了一台百度云服务器花了11块钱，花了点时间学了下如何部署hexo博客以及一些服务器方面的配置，没用hexo推荐的方式部署。专门记一个文章。系统用的是centos，先上图和链接
 ## 博客地址
-[sunqx的博客](http://www.sunqx.top:4000)
-
-![preview.png](https://upload-images.jianshu.io/upload_images/6114493-3d1caea56828ef4a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![preview.png](/img/6114493-3d1caea56828ef4a.webp)
 
 ## 步骤
 1. 先用hexo快捷搭建本地blog，再把项目上传到github 
@@ -98,7 +96,7 @@ PubkeyAuthentication yes
 ``ssh-add ~/.ssh/id_rsa``
 生效,centos 下``service sshd restart``
 把  ``id_rsa.pub`` 里面的内容 放到git 账户里面ssh 配置里
-![Screenshot 2018-12-02_23-25-37.png](https://upload-images.jianshu.io/upload_images/6114493-9b765e356cd0a732.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![Screenshot 2018-12-02_23-25-37.png](/img/6114493-9b765e356cd0a732.webp)
 **注意！！** 在服务器里你准备clone 项目的文件夹里 先用ssh clone 一遍 ``git@github.com:SHpoi/my-blog.git`` 第一次git clone 会有确认项，不然后面用pm2部署老是会遇到一个拉取项目为空的报错。
 
 #### 在服务器配置nodejs环境

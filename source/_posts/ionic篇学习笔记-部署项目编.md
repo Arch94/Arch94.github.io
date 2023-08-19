@@ -43,7 +43,7 @@ ionic cordova build android
 值得一提的是，这个build很多人都会出现问题，如果是android环境没配好，确保你的androidStudio能新建一个项目并成功跑起来。然后如果对android开发不太熟，不知道gradle怎么用怎么打包的筒子（作者我～～）,直接用androidStudio打开ionic编译后生成的android项目，就是那个platform下的android文件夹。androidStudio会自动帮你构建项目。
 
 我在androidStudio编译项目时遇到了一些问题，如果编译失败，除了网速问题（科学上网）以外，还遇到过
-![Jietu20171218-134359@2x.png](https://upload-images.jianshu.io/upload_images/6114493-80d4abe9ba203c9c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![Jietu20171218-134359@2x.png](/img/6114493-80d4abe9ba203c9c.webp)
 这种问题，现在ionic build项目我已经没遇见了，前几个月build一次遇见一次。
 直接去 https://www.imooc.com/article/21867 看，找到问题6就行了。
 

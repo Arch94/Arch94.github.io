@@ -41,17 +41,17 @@ npm install -g cordova-hot-code-push-cli
 http://192.168.1.76:8121 访问的是ionic项目的首页
 http://192.168.1.76:8121/chcp.json 也要能访问到
 
-6.  以后发布执行``cordova-hcp build``命令，就可以把模板内容替换到chcp.json文件内，因为每次更新或者发布app都会使热更新服务重新生成chcp.json文件内容
+6. 以后发布执行``cordova-hcp build``命令，就可以把模板内容替换到chcp.json文件内，因为每次更新或者发布app都会使热更新服务重新生成chcp.json文件内容
 值得注意的是，这条命令一运行，热更新服务的运行窗口也会报相应的日志
-![Screenshot 2018-02-16_20-10-53.png](http://upload-images.jianshu.io/upload_images/6114493-0386c299e9515172.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![Screenshot 2018-02-16_20-10-53.png](/img/6114493-0386c299e9515172.webp)
 
-可见这条命令不仅生成chcp.json内容这么简单。然后再说我发现的一个问题，执行ionic serve 就会chcp.json又改回原来的了，所以打包build的时候要小心一点。
+  可见这条命令不仅生成chcp.json内容这么简单。然后再说我发现的一个问题，执行ionic serve 就会chcp.json又改回原来的了，所以打包build的时候要小心一点。
 
 7. build安卓包 ```ionic cordova build android```
 到这一步，编译完android包以后记得再看一下配置，这回要看app里面的。
-![Screenshot 2018-02-16_20-17-13.png](http://upload-images.jianshu.io/upload_images/6114493-11068a510e2fbf35.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![Screenshot 2018-02-16_20-17-13.png](/img/6114493-11068a510e2fbf35.webp)
 
-别又是什么ngrok内网穿透的地址，这就不好玩了，不对的话，把www里面的chcp.json内容复制过来替换一下。
+  别又是什么ngrok内网穿透的地址，这就不好玩了，不对的话，把www里面的chcp.json内容复制过来替换一下。
 
 8.最后一步就直接打开安装好的app了，改一下html内容,用``ionic serve`` 编译一下，把app关掉重新开一下，就可以看到热更新改的东西了。
 注意：我这边测试热更新是用模拟器的，用真的小伙伴注意下你的地址是不是手机可以访问哦！

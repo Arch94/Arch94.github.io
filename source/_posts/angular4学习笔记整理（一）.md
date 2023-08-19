@@ -25,7 +25,7 @@ ng g service xxx  生成服务
 npm install jquery --save
 ```
 2. 在angular-cli.json  里的app 配置文件里面 的styles、scripts里面添加js或者css的相对路径,就放在app的script里面，里面还有一个框的是bootstrap
-![Screenshot 2018-01-12_19-03-46.png](http://upload-images.jianshu.io/upload_images/6114493-648480aa2acad151.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![Screenshot 2018-01-12_19-03-46.png](/img/6114493-648480aa2acad151.webp)
 
 3. 由于typescript 不认识js的东西，还需要一个 类型描述文件
 ```

@@ -13,7 +13,7 @@ tags:
 import {RouterModule, Routes} from '@angular/router';
 ```
 2. 然后在ngModule里面加点东西
-![Screenshot 2018-01-12_19-41-32.png](http://upload-images.jianshu.io/upload_images/6114493-aeb2f9d6fdf7cc80.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![Screenshot 2018-01-12_19-41-32.png](/img/6114493-aeb2f9d6fdf7cc80.webp)
 3. 这个routeConfig需要自己定义，类型Routes，里面就是angular路由配置
 
 ```
