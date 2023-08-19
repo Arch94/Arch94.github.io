@@ -10,8 +10,7 @@ ____
 
 These are some of the technologies and tools that I work with:
 
-Frontend
-
+Frontend:
 ![Vue](https://img.shields.io/badge/-Vue-4FC08D?style=flat-square&logo=vuedotjs&logoColor=white)
 ![React](https://img.shields.io/badge/-React-61DAFB?style=flat-square&logo=react&logoColor=white)
 ![Wechat](https://img.shields.io/badge/-MiniProgram-07C160?style=flat-square&logo=wechat&logoColor=white)
