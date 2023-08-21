@@ -4,7 +4,8 @@
 <p align="center">
   <img alt="Fluid Logo" src="https://avatars2.githubusercontent.com/t/3419353?s=280&v=4" width="128">
 </p>
-#### Quick start
+
+## Quick start
 
 1. install hexo-cli
 ```sh
