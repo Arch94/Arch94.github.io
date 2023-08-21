@@ -6,7 +6,6 @@ categories:
 tags:
 - nginx
 ---
-# Nginx
 
 ## 目录
 
