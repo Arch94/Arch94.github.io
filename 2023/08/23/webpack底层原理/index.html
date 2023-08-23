@@ -1,0 +1,700 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/avatar.png">
+  <link rel="icon" href="/img/avatar.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Arch Sun">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="目录 如何编写一个Loader 同步loader实现 异步loader实现 config配置自定义loader   如何编写一个Plugin webpack 执行流程  如何编写一个Loader同步loader实现1234567const loaderUtils &#x3D; require(&quot;loader-utils&quot;);module.exports &#x3D; function(source">
+<meta property="og:type" content="article">
+<meta property="og:title" content="webpack底层原理">
+<meta property="og:url" content="http://arch94.github.io/2023/08/23/webpack%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86/index.html">
+<meta property="og:site_name" content="Arch&#39;s Blog">
+<meta property="og:description" content="目录 如何编写一个Loader 同步loader实现 异步loader实现 config配置自定义loader   如何编写一个Plugin webpack 执行流程  如何编写一个Loader同步loader实现1234567const loaderUtils &#x3D; require(&quot;loader-utils&quot;);module.exports &#x3D; function(source">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://arch94.github.io/img/image_t4A6GJsauX.png">
+<meta property="article:published_time" content="2023-08-23T01:42:00.000Z">
+<meta property="article:modified_time" content="2023-08-23T01:42:21.199Z">
+<meta property="article:author" content="Arch Sun">
+<meta property="article:tag" content="webpack">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://arch94.github.io/img/image_t4A6GJsauX.png">
+  
+  
+  
+  <title>webpack底层原理 - Arch&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"arch94.github.io","root":"/","version":"1.9.5-a","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Arch&#39;s blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="webpack底层原理"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-08-23 09:42" pubdate>
+          2023年8月23日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          4.2k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          36 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">webpack底层原理</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h2><ul>
+<li><a href="#%E5%A6%82%E4%BD%95%E7%BC%96%E5%86%99%E4%B8%80%E4%B8%AALoader">如何编写一个Loader</a><ul>
+<li><a href="#%E5%90%8C%E6%AD%A5loader%E5%AE%9E%E7%8E%B0">同步loader实现</a></li>
+<li><a href="#%E5%BC%82%E6%AD%A5loader%E5%AE%9E%E7%8E%B0">异步loader实现</a></li>
+<li><a href="#config%E9%85%8D%E7%BD%AE%E8%87%AA%E5%AE%9A%E4%B9%89loader">config配置自定义loader</a></li>
+</ul>
+</li>
+<li><a href="#%E5%A6%82%E4%BD%95%E7%BC%96%E5%86%99%E4%B8%80%E4%B8%AAPlugin">如何编写一个Plugin</a></li>
+<li><a href="#webpack-%E6%89%A7%E8%A1%8C%E6%B5%81%E7%A8%8B">webpack 执行流程</a></li>
+</ul>
+<h3 id="如何编写一个Loader"><a href="#如何编写一个Loader" class="headerlink" title="如何编写一个Loader"></a>如何编写一个Loader</h3><h4 id="同步loader实现"><a href="#同步loader实现" class="headerlink" title="同步loader实现"></a>同步loader实现</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">const</span> loaderUtils = <span class="hljs-built_in">require</span>(<span class="hljs-string">&quot;loader-utils&quot;</span>);<br><span class="hljs-variable language_">module</span>.<span class="hljs-property">exports</span> = <span class="hljs-keyword">function</span>(<span class="hljs-params">source</span>)&#123; <span class="hljs-comment">//source是原文本</span><br>  <span class="hljs-keyword">const</span> options = loaderUtils.<span class="hljs-title function_">getOptions</span>(<span class="hljs-variable language_">this</span>); <span class="hljs-comment">//拿到option参数，其实就是this.query</span><br>  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(source)<br>  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(options)<br>  <span class="hljs-keyword">return</span> source.<span class="hljs-title function_">replace</span>(<span class="hljs-string">&#x27;1234&#x27;</span>,<span class="hljs-string">&#x27;5678&#x27;</span>) <span class="hljs-comment">//最简单的loader，文本替换就完了</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>如果有错误信息，要抛出去怎么解决呢,调用 this.callback即可</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-variable language_">this</span>.<span class="hljs-title function_">callback</span>(<span class="hljs-string">&#x27;错误信息&#x27;</span>,source.<span class="hljs-title function_">replace</span>(<span class="hljs-string">&#x27;1234&#x27;</span>,<span class="hljs-string">&#x27;5678&#x27;</span>))<br></code></pre></td></tr></table></figure>
+
+<h4 id="异步loader实现"><a href="#异步loader实现" class="headerlink" title="异步loader实现"></a>异步loader实现</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">const</span> loaderUtils = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;loader-utils&#x27;</span>);<br><span class="hljs-variable language_">module</span>.<span class="hljs-property">exports</span> = <span class="hljs-keyword">function</span>(<span class="hljs-params">source</span>) &#123;<br>  <span class="hljs-keyword">const</span> options = loaderUtils.<span class="hljs-title function_">getOptions</span>(<span class="hljs-variable language_">this</span>);<br>  <span class="hljs-keyword">const</span> callback = <span class="hljs-variable language_">this</span>.<span class="hljs-title function_">async</span>();<br><br>  <span class="hljs-built_in">setTimeout</span>(<span class="hljs-function">() =&gt;</span> &#123;<br>    <span class="hljs-keyword">const</span> result = source.<span class="hljs-title function_">replace</span>(<span class="hljs-string">&#x27;dell&#x27;</span>, options.<span class="hljs-property">name</span>);<br>    <span class="hljs-title function_">callback</span>(<span class="hljs-literal">null</span>, result);<br>  &#125;, <span class="hljs-number">1000</span>);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h4 id="config配置自定义loader"><a href="#config配置自定义loader" class="headerlink" title="config配置自定义loader"></a>config配置自定义loader</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">const</span> path = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;path&#x27;</span>);<br><br><span class="hljs-variable language_">module</span>.<span class="hljs-property">exports</span> = &#123;<br>  <span class="hljs-attr">mode</span>: <span class="hljs-string">&#x27;development&#x27;</span>,<br>  <span class="hljs-attr">entry</span>: &#123;<br>    <span class="hljs-attr">main</span>: <span class="hljs-string">&#x27;./src/index.js&#x27;</span><br>  &#125;,<br>  <span class="hljs-attr">resolveLoader</span>: &#123; <span class="hljs-comment">//一定要配置自定义loader目录，不然自定义loader就得path引入</span><br>    <span class="hljs-attr">modules</span>: [<span class="hljs-string">&#x27;node_modules&#x27;</span>, <span class="hljs-string">&#x27;./loaders&#x27;</span>]<br>  &#125;,<br>  <span class="hljs-attr">module</span>: &#123;<br>    <span class="hljs-attr">rules</span>: [&#123;<br>      <span class="hljs-attr">test</span>: <span class="hljs-regexp">/\.js/</span>,<br>      <span class="hljs-attr">use</span>: [<br>        &#123;<br>          <span class="hljs-attr">loader</span>: <span class="hljs-string">&#x27;customLoader&#x27;</span>, <span class="hljs-comment">//自定义loader引入</span><br>          <span class="hljs-attr">options</span>: &#123;<br>            <span class="hljs-attr">name</span>: <span class="hljs-string">&#x27;2234&#x27;</span><br>          &#125;<br>        &#125;<br>      ]<br>    &#125;]<br>  &#125;,<br>  <span class="hljs-attr">output</span>: &#123;<br>    <span class="hljs-attr">path</span>: path.<span class="hljs-title function_">resolve</span>(__dirname, <span class="hljs-string">&#x27;dist&#x27;</span>),<br>    <span class="hljs-attr">filename</span>: <span class="hljs-string">&#x27;[name].js&#x27;</span><br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="如何编写一个Plugin"><a href="#如何编写一个Plugin" class="headerlink" title="如何编写一个Plugin"></a>如何编写一个Plugin</h3><p>plugin 的实现可以是一个类，使用时传入相关配置来创建一个实例，然后放到配置的 <code>plugins</code> 字段中，而 plugin 实例中最重要的方法是 <code>apply</code>，该方法在 webpack compiler 安装插件时会被调用一次，<code>apply</code> 接收 webpack compiler 对象实例的引用，你可以在 compiler 对象实例上注册各种事件钩子函数，来影响 webpack 的所有构建流程，以便完成更多其他的构建任务。</p>
+<blockquote>
+<p>compiler 对象代表了完整的 webpack 环境配置。这个对象在启动 webpack 时被一次性建立，并配置好所有可操作的设置，包括 options，loader 和 plugin。当在 webpack 环境中应用一个插件时，插件将收到此 compiler 对象的引用。可以使用它来访问 webpack 的主环境。</p>
+</blockquote>
+<blockquote>
+<p>compilation 对象代表了一次资源版本构建。当运行 webpack 开发环境中间件时，每当检测到一个文件变化，就会创建一个新的 compilation，从而生成一组新的编译资源。一个 compilation 对象表现了当前的模块资源、编译生成资源、变化的文件、以及被跟踪依赖的状态信息。compilation 对象也提供了很多关键时机的回调，以供插件做自定义处理时选择使用</p>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">class</span> <span class="hljs-title class_">CopyrightWebpackPlugin</span> &#123;<br>  <span class="hljs-title function_">constructor</span>(<span class="hljs-params">options</span>)&#123;<br>    <span class="hljs-comment">//options插件传参</span><br>    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(options)<br>  &#125;<br>  <span class="hljs-comment">//核心方法</span><br>  <span class="hljs-title function_">apply</span>(<span class="hljs-params">compiler</span>) &#123; <span class="hljs-comment">// compiler webpack实例</span><br>    <span class="hljs-comment">//hooks 在emit 阶段触发</span><br>    compiler.<span class="hljs-property">hooks</span>.<span class="hljs-property">emit</span>.<span class="hljs-title function_">tapAsync</span>(<span class="hljs-string">&#x27;CopyrightWebpackPlugin&#x27;</span>, <span class="hljs-function">(<span class="hljs-params">compilation, cb</span>) =&gt;</span> &#123;<br>      <span class="hljs-comment">//打包生成新文件</span><br>      compilation.<span class="hljs-property">assets</span>[<span class="hljs-string">&#x27;copyright223.txt&#x27;</span>]= &#123;<br>        <span class="hljs-attr">source</span>: <span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) &#123;<br>          <span class="hljs-keyword">return</span> <span class="hljs-string">&#x27;copyright by sunqixiong&#x27;</span><br>        &#125;,<br>        <span class="hljs-attr">size</span>: <span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) &#123;<br>          <span class="hljs-keyword">return</span> <span class="hljs-number">21</span>;<br>        &#125;<br>      &#125;;<br>      <span class="hljs-comment">//异步方法要执行cb进行回调</span><br>      <span class="hljs-title function_">cb</span>();<br>    &#125;)<br>  &#125;<br><br>&#125;<br><br><span class="hljs-variable language_">module</span>.<span class="hljs-property">exports</span> = <span class="hljs-title class_">CopyrightWebpackPlugin</span>;<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">const</span> path = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;path&#x27;</span>);<br><span class="hljs-keyword">const</span> <span class="hljs-title class_">CopyRightWebpackPlugin</span> = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;./plugins/copyright-webpack-plugin&#x27;</span>); <span class="hljs-comment">//本地引入</span><br><br><span class="hljs-variable language_">module</span>.<span class="hljs-property">exports</span> = &#123;<br>  <span class="hljs-attr">mode</span>: <span class="hljs-string">&#x27;development&#x27;</span>,<br>  <span class="hljs-attr">entry</span>: &#123;<br>    <span class="hljs-attr">main</span>: <span class="hljs-string">&#x27;./src/index.js&#x27;</span><br>  &#125;,<br>  <span class="hljs-attr">plugins</span>: [<br>    <span class="hljs-keyword">new</span> <span class="hljs-title class_">CopyRightWebpackPlugin</span>(&#123;<span class="hljs-attr">name</span>:<span class="hljs-number">1</span>&#125;) <span class="hljs-comment">//传参</span><br>  ],<br>  <span class="hljs-attr">output</span>: &#123;<br>    <span class="hljs-attr">path</span>: path.<span class="hljs-title function_">resolve</span>(__dirname, <span class="hljs-string">&#x27;dist&#x27;</span>),<br>    <span class="hljs-attr">filename</span>: <span class="hljs-string">&#x27;[name].js&#x27;</span><br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="webpack-执行流程"><a href="#webpack-执行流程" class="headerlink" title="webpack 执行流程"></a>webpack 执行流程</h3><p><img src="/img/image_t4A6GJsauX.png" srcset="/img/loading.gif" lazyload alt="webpack 执行过程" title="webpack 执行过程"></p>
+<p><code>ebpack</code>包含两个很重要的基础概念,分别是<code>compiler</code>和<code>compilation</code>.</p>
+<p><code>compiler</code>是<code>webpack</code>的支柱引擎,它相当于系统中枢,控制着程序的执行.</p>
+<p>代码头部首先引入<code>webpack</code>和配置文件参数<code>options</code>,通过执行<code>webpack(options)</code>即可生成<code>compiler</code>对象,再执行对象的<code>run</code>方法就能开始启动代码编译.</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">const</span> webpack = <span class="hljs-built_in">require</span>(<span class="hljs-string">&quot;webpack&quot;</span>);<br><span class="hljs-keyword">const</span> options = <span class="hljs-built_in">require</span>(<span class="hljs-string">&quot;../webpack.config.js&quot;</span>);<br><br><span class="hljs-keyword">const</span> compiler = <span class="hljs-title function_">webpack</span>(options);<br>compiler.<span class="hljs-title function_">run</span>(); <span class="hljs-comment">// 启动代码编译</span><br></code></pre></td></tr></table></figure>
+
+<p>上图中,当<code>compiler</code>执行<code>make</code>阶段时,标志着代码的编译工作正式开始,这时候会创建<code>compilation</code>对象完成相关任务.</p>
+<p><code>compilation</code>会依次执行第二行标记的<code>3</code>个钩子,等到代码的编译工作结束后,主线程又回到了<code>compiler</code>,继续往下执行<code>emit</code>钩子.</p>
+<p>简而言之,<code>compiler</code><strong>执行到</strong>**<code>make</code><strong><strong>和</strong></strong><code>emit</code>**<strong>之间时</strong>,<code>compilation</code>对象便出场了,它会依次执行它定义的一系列钩子函数,像代码的编译、依赖分析、优化、封装正是在这个阶段完成的.</p>
+<p><code>compilation</code>实例主要负责代码的编译和构建.每进行一次代码的编译(例如日常开发时按<code>ctrl + s</code>保存修改后的代码),都会重新生成一个<code>compilation</code>实例负责本次的构建任务.</p>
+<p>整体执行流程已经梳理了一遍,接下来深入到上图中标记的每一个钩子函数,理解其对应的时间节点.</p>
+<ul>
+<li><code>entryOption:``webpack</code>开始读取配置文件的<code>Entries</code>,递归遍历所有的入口文件.</li>
+<li><code>run:</code> 程序即将进入构建环节</li>
+<li><code>compile:</code> 程序即将创建<code>compilation</code>实例对象</li>
+<li><code>make:``compilation</code>实例启动对代码的编译和构建</li>
+<li><code>emit:</code> 所有打包生成的文件内容已经在内存中按照相应的数据结构处理完毕,下一步会将文件内容输出到文件系统,<code>emit</code>钩子会在生成文件之前执行(通常想操作打包后的文件可以在<code>emit</code>阶段编写<code>plugin</code>实现).</li>
+<li><code>done:</code> 编译后的文件已经输出到目标目录,整体代码的构建工作结束时触发</li>
+</ul>
+<p><code>compilation</code>下的钩子含义如下.</p>
+<ul>
+<li><code>buildModule:</code> 在模块构建开始之前触发,这个钩子下可以用来修改模块的参数</li>
+<li><code>seal:</code> 构建工作完成了,<code>compilation</code>对象停止接收新的模块时触发</li>
+<li><code>optimize:</code> 优化阶段开始时触发</li>
+</ul>
+<p><code>compiler</code>进入<code>make</code>阶段后,<code>compilation</code>实例被创建出来,它会先触发<code>buildModule</code>阶段定义的钩子,此时<code>compilation</code>实例依次进入每一个入口文件(<code>entry</code>),加载相应的<code>loader</code>对代码编译.</p>
+<p>代码编译完成后,再将编译好的文件内容调用 <code>acorn</code> 解析生成<code>AST</code>语法树,按照此方法继续递归、重复执行该过程.</p>
+<p>所有模块和和依赖分析完成后,<code>compilation</code>进入<code>seal</code> 阶段,对每个<code>chunk</code>进行整理,接下来进入<code>optimize</code>阶段,开启代码的优化和封装.</p>
+<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/400015634">https://zhuanlan.zhihu.com/p/400015634</a></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/webpack/" class="category-chain-item">webpack</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/webpack/" class="print-no-link">#webpack</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>webpack底层原理</div>
+      <div>http://arch94.github.io/2023/08/23/webpack底层原理/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Arch Sun</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年8月23日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/08/22/webpack%E9%AB%98%E7%BA%A7%E6%A6%82%E5%BF%B5/" title="webpack 高级概念">
+                        <span class="hidden-mobile">webpack 高级概念</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
