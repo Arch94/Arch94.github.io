@@ -16,21 +16,29 @@
   <meta name="author" content="Arch Sun">
   <meta name="keywords" content="">
   
-    <meta name="description" content="Professional Summary Arch.Sun bachelor of software engineering,Lanzhou University of Technology. Email: &amp;#115;&amp;#x75;&amp;#x6e;&amp;#113;&amp;#x69;&amp;#120;&amp;#105;&amp;#111;&amp;#x6e;&amp;#x67;&amp;#x40;&amp;#x66;&amp;#x6f;&amp;#120;&amp;#109;&amp;#97;&amp;">
-<meta property="og:type" content="website">
-<meta property="og:title" content="关于">
-<meta property="og:url" content="http://arch94.github.io/about/index.html">
+    <meta name="description" content="一、半编译半运行时1.1 【半编译】vue的template 通过 mpvue-template-compiler 编译成 wxml 1.2 【半运行时】在小程序中实现了一套runtime用来跑vue的script部分的代码vue运行时  mpvue运行时  &amp;#x20;mpvue 的运行时，会首先将 patch 阶段的 DOM 操作相关方法置空，也就是什么都不做。其次，在创建 Vue 实例的同时">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Mpvue原理分析">
+<meta property="og:url" content="http://arch94.github.io/2023/08/28/Mpvue%E5%8E%9F%E7%90%86%E5%88%86%E6%9E%90/index.html">
 <meta property="og:site_name" content="Arch&#39;s Blog">
-<meta property="og:description" content="Professional Summary Arch.Sun bachelor of software engineering,Lanzhou University of Technology. Email: &amp;#115;&amp;#x75;&amp;#x6e;&amp;#113;&amp;#x69;&amp;#120;&amp;#105;&amp;#111;&amp;#x6e;&amp;#x67;&amp;#x40;&amp;#x66;&amp;#x6f;&amp;#120;&amp;#109;&amp;#97;&amp;">
+<meta property="og:description" content="一、半编译半运行时1.1 【半编译】vue的template 通过 mpvue-template-compiler 编译成 wxml 1.2 【半运行时】在小程序中实现了一套runtime用来跑vue的script部分的代码vue运行时  mpvue运行时  &amp;#x20;mpvue 的运行时，会首先将 patch 阶段的 DOM 操作相关方法置空，也就是什么都不做。其次，在创建 Vue 实例的同时">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2023-08-19T06:58:09.000Z">
-<meta property="article:modified_time" content="2023-08-19T07:24:49.517Z">
+<meta property="og:image" content="https://img14.360buyimg.com/ling/jfs/t1/107613/2/2742/42346/5e09f5c5E7424d037/b2d7a1d5327cdf4f.jpg">
+<meta property="og:image" content="https://img14.360buyimg.com/ling/jfs/t1/98880/36/8962/23682/5e09ee76Ee70d5703/898f0c8b2003eafe.jpg">
+<meta property="og:image" content="https://img12.360buyimg.com/ling/jfs/t1/85977/36/9055/54025/5e09efc8Ea2a7e868/60360ca99a89c1a7.jpg">
+<meta property="og:image" content="http://arch94.github.io/img/image_kidDls1l_H.png">
+<meta property="article:published_time" content="2023-08-28T01:36:00.000Z">
+<meta property="article:modified_time" content="2023-08-28T01:34:30.141Z">
 <meta property="article:author" content="Arch Sun">
+<meta property="article:tag" content="mpvue">
+<meta property="article:tag" content="wechat">
+<meta property="article:tag" content="mini-program">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://img14.360buyimg.com/ling/jfs/t1/107613/2/2742/42346/5e09f5c5E7424d037/b2d7a1d5327cdf4f.jpg">
   
   
   
-  <title>关于 - Arch&#39;s Blog</title>
+  <title>Mpvue原理分析 - Arch&#39;s Blog</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -90,7 +98,7 @@
   <header>
     
 
-<div class="header-inner" style="height: 60vh;">
+<div class="header-inner" style="height: 70vh;">
   <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
   <div class="container">
     <a class="navbar-brand" href="/">
@@ -196,9 +204,49 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="关于"></span>
+            <span id="subtitle" data-typed-text="Mpvue原理分析"></span>
           
         </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-08-28 09:36" pubdate>
+          2023年8月28日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          525 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          5 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
 
         
       </div>
@@ -214,69 +262,178 @@
 
   <main>
     
-      <div class="container nopadding-x-md">
-        <div id="board"
-          >
-          
-            <div class="about-avatar">
-              <img src="/img/WechatIMG285.jpg" srcset="/img/loading.gif" lazyload class="img-fluid" alt="avatar">
-            </div>
-          
-          <div class="container">
-            <div class="row">
-              <div class="col-12 col-md-10 m-auto">
-                
+      
 
-<div class="text-center">
-  <div class="about-info">
-    <div class="about-name">Arch's blog</div>
-    <div class="about-intro">Arch's blog</div>
-    <div class="about-icons">
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
       
-        
-        
-        
-        <a href=https://github.com/Arch94 class="
-           hint--bottom hint--rounded"
-           aria-label=GitHub
-           target="_blank"
-        >
-          <i class="iconfont icon-github-fill" aria-hidden="true"></i>
-          
-        </a>
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Mpvue原理分析</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h3 id="一、半编译半运行时"><a href="#一、半编译半运行时" class="headerlink" title="一、半编译半运行时"></a>一、半编译半运行时</h3><h4 id="1-1-【半编译】vue的template-通过-mpvue-template-compiler-编译成-wxml"><a href="#1-1-【半编译】vue的template-通过-mpvue-template-compiler-编译成-wxml" class="headerlink" title="1.1 【半编译】vue的template 通过 mpvue-template-compiler 编译成 wxml"></a>1.1 【半编译】vue的template 通过 mpvue-template-compiler 编译成 wxml</h4><p><img src="https://img14.360buyimg.com/ling/jfs/t1/107613/2/2742/42346/5e09f5c5E7424d037/b2d7a1d5327cdf4f.jpg" srcset="/img/loading.gif" lazyload></p>
+<h4 id="1-2-【半运行时】在小程序中实现了一套runtime用来跑vue的script部分的代码"><a href="#1-2-【半运行时】在小程序中实现了一套runtime用来跑vue的script部分的代码" class="headerlink" title="1.2 【半运行时】在小程序中实现了一套runtime用来跑vue的script部分的代码"></a>1.2 【半运行时】在小程序中实现了一套runtime用来跑vue的script部分的代码</h4><p>vue运行时</p>
+<p><img src="https://img14.360buyimg.com/ling/jfs/t1/98880/36/8962/23682/5e09ee76Ee70d5703/898f0c8b2003eafe.jpg" srcset="/img/loading.gif" lazyload></p>
+<p>mpvue运行时</p>
+<p><img src="https://img12.360buyimg.com/ling/jfs/t1/85977/36/9055/54025/5e09efc8Ea2a7e868/60360ca99a89c1a7.jpg" srcset="/img/loading.gif" lazyload></p>
+<p>&#x20;mpvue 的运行时，会首先将 patch 阶段的 DOM 操作相关方法置空，也就是什么都不做。其次，在创建 Vue 实例的同时，还会偷偷的调用 <code>Page()</code> 用于生成了小程序的 page 实例。然后 运行时的 patch 阶段会直接调用 <code>$updateDataToMp()</code>方法，这个方法会获取挂在在 page 实例上维护的数据 ，然后通过 <code>setData</code> 方法更新到视图层。</p>
+<h3 id="二、整体架构"><a href="#二、整体架构" class="headerlink" title="二、整体架构"></a>二、整体架构</h3><p><img src="/img/image_kidDls1l_H.png" srcset="/img/loading.gif" lazyload></p>
+<ul>
+<li>Vue实例与小程序Page建立关联</li>
+<li>小程序和Vue生命周期建立映射关系，能在小程序生命周期中触发Vue生命周期</li>
+<li>建立事件代理机制，在事件代理函数中触发与之对应的Vue事件响应</li>
+<li>小程序与vue数据同步</li>
+</ul>
+<h3 id="三、整体思考"><a href="#三、整体思考" class="headerlink" title="三、整体思考"></a>三、整体思考</h3><p>mpvue的局限性：</p>
+<ol>
+<li>由于小程序模版的限制，无法使用vue特有的api，如：filter、v-html</li>
+<li>将vue运行在小程序上，小程序和vue的运行时性能决定了mpvue的上限</li>
+<li>fork了vue@2.4.1的代码，使得mpvue无法及时更新vue的新特性</li>
+</ol>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
       
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
         
-        
-        
-        <a  class="qr-trigger
-           "
-           
-           target="_self"
-        >
-          <i class="iconfont icon-wechat-fill" aria-hidden="true"></i>
-          
-            <img class="qr-img" src="/img/arch_wechat.jpg" srcset="/img/loading.gif" lazyload alt="qrcode" />
-          
-        </a>
+  <a href="/categories/hybird/" class="category-chain-item">hybird</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
       
+        <a href="/tags/mpvue/" class="print-no-link">#mpvue</a>
+      
+        <a href="/tags/wechat/" class="print-no-link">#wechat</a>
+      
+        <a href="/tags/mini-program/" class="print-no-link">#mini-program</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Mpvue原理分析</div>
+      <div>http://arch94.github.io/2023/08/28/Mpvue原理分析/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Arch Sun</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年8月28日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/08/27/express%E6%89%8B%E5%86%99/" title="express手写">
+                        <span class="hidden-mobile">express手写</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
     </div>
   </div>
 </div>
 
-<article class="about-content page-content mt-5">
-  <div class="markdown-body">
-    <h1 id="Professional-Summary"><a href="#Professional-Summary" class="headerlink" title="Professional Summary"></a>Professional Summary</h1><ul>
-<li>Arch.Sun</li>
-<li>bachelor of software engineering,Lanzhou University of Technology.</li>
-<li>Email: <a href="mailto:&#115;&#x75;&#x6e;&#113;&#x69;&#120;&#105;&#111;&#x6e;&#x67;&#x40;&#x66;&#x6f;&#120;&#109;&#97;&#x69;&#x6c;&#46;&#x63;&#x6f;&#109;">&#115;&#x75;&#x6e;&#113;&#x69;&#120;&#105;&#111;&#x6e;&#x67;&#x40;&#x66;&#x6f;&#120;&#109;&#97;&#x69;&#x6c;&#46;&#x63;&#x6f;&#109;</a></li>
-<li>Experienced and dedicated Senior Front-end Engineer with six years of experience, proficient in all stages of advanced web development, professional cross-platform skills that can quickly develop applications across mini-programs, web, and app. Ability to effectively self-manage and deliver independent projects and collaborate in a team setting.</li>
-</ul>
-
-  </div>
-
-  
-</article>
-
 
 
 
@@ -303,11 +460,8 @@
 
 
 
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+
+
     
 
     
@@ -400,6 +554,46 @@
   
 
 
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
 
 
   <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
