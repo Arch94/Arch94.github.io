@@ -1,0 +1,799 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/avatar.png">
+  <link rel="icon" href="/img/avatar.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Arch Sun">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="目录 Taro 是什么？ Taro2 Taro2编译问题 Taro2的架构特点 Taro2的架构问题   Taro3 Taro3的taro-runtime，自行实现了一套 DOM&#x2F;BOM的api Taro3的react适配 Taro的react适配具体实现 如何将Taro的DOM tree渲染到小程序的视图层？ Taro3 小程序Vue 实现 Taro3 事件机制 Taro3的架构特点">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Taro技术分析">
+<meta property="og:url" content="http://arch94.github.io/2023/08/29/Taro/index.html">
+<meta property="og:site_name" content="Arch&#39;s Blog">
+<meta property="og:description" content="目录 Taro 是什么？ Taro2 Taro2编译问题 Taro2的架构特点 Taro2的架构问题   Taro3 Taro3的taro-runtime，自行实现了一套 DOM&#x2F;BOM的api Taro3的react适配 Taro的react适配具体实现 如何将Taro的DOM tree渲染到小程序的视图层？ Taro3 小程序Vue 实现 Taro3 事件机制 Taro3的架构特点">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://arch94.github.io/img/image_LbpYX-WYMf.png">
+<meta property="og:image" content="http://arch94.github.io/img/image_ecTM4qsics.png">
+<meta property="og:image" content="https://img10.360buyimg.com/ling/jfs/t1/91591/19/8966/30891/5e09f712E6e7f1df8/c3cbbead85810461.jpg">
+<meta property="og:image" content="https://img12.360buyimg.com/ling/jfs/t1/107806/8/2825/294525/5e09f810E8d32975f/ec84acddae669131.png">
+<meta property="og:image" content="https://img10.360buyimg.com/ling/jfs/t1/93547/36/9145/40000/5e09f948Edd646b65/ce37c0d099b7f702.jpg">
+<meta property="og:image" content="https://img13.360buyimg.com/ling/jfs/t1/90851/28/9324/88846/5e0d9374Ec9b1a530/6a494163f77c6dd7.jpg">
+<meta property="og:image" content="https://img14.360buyimg.com/ling/jfs/t1/93510/31/8909/48959/5e09fa87E1d831f7e/5d6f1f945c23e529.jpg">
+<meta property="og:image" content="https://img10.360buyimg.com/ling/jfs/t1/91642/11/9016/45574/5e09fc9dE03db038c/f87d7fc69e04b26e.jpg">
+<meta property="og:image" content="https://img11.360buyimg.com/ling/jfs/t1/106748/9/9067/61495/5e09fd1eE47733747/a11b3ef8b1a7f791.jpg">
+<meta property="og:image" content="https://img30.360buyimg.com/ling/jfs/t1/96356/5/8961/15030/5e0aae8aE452804bd/f4c7df38129d99c5.jpg">
+<meta property="og:image" content="https://img10.360buyimg.com/ling/jfs/t1/103912/33/8987/52864/5e0ab09fEcdcb31c2/d29510c9bc5dd255.jpg">
+<meta property="og:image" content="https://img20.360buyimg.com/ling/jfs/t1/85061/33/9155/42050/5e0ae1afE263741c9/7a1664f1a6769d7a.jpg">
+<meta property="og:image" content="https://img10.360buyimg.com/ling/jfs/t1/93372/24/9137/11878/5e0ae512E79c720f9/ab326eef51d168a5.jpg">
+<meta property="og:image" content="https://img10.360buyimg.com/ling/jfs/t1/86893/14/9016/38824/5e0ac06aE21db32b1/c4bece64d139dd8e.jpg">
+<meta property="og:image" content="https://img12.360buyimg.com/ling/jfs/t1/100878/15/9005/22516/5e0ae322E690a60fb/9b3a09bf64a51871.jpg">
+<meta property="og:image" content="https://img30.360buyimg.com/ling/jfs/t1/88749/23/9077/15347/5e0ae41cE71f77070/3f24bf6459abf2e9.jpg">
+<meta property="article:published_time" content="2023-08-29T02:00:00.000Z">
+<meta property="article:modified_time" content="2023-08-29T02:01:10.910Z">
+<meta property="article:author" content="Arch Sun">
+<meta property="article:tag" content="wechat">
+<meta property="article:tag" content="mini-program">
+<meta property="article:tag" content="Taro">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://arch94.github.io/img/image_LbpYX-WYMf.png">
+  
+  
+  
+  <title>Taro技术分析 - Arch&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"arch94.github.io","root":"/","version":"1.9.5-a","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Arch&#39;s blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Taro技术分析"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-08-29 10:00" pubdate>
+          2023年8月29日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          3.8k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          32 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Taro技术分析</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h2><ul>
+<li><a href="#Taro-%E6%98%AF%E4%BB%80%E4%B9%88">Taro 是什么？</a></li>
+<li><a href="#Taro2">Taro2</a><ul>
+<li><a href="#Taro2%E7%BC%96%E8%AF%91%E9%97%AE%E9%A2%98">Taro2编译问题</a></li>
+<li><a href="#Taro2%E7%9A%84%E6%9E%B6%E6%9E%84%E7%89%B9%E7%82%B9">Taro2的架构特点</a></li>
+<li><a href="#Taro2%E7%9A%84%E6%9E%B6%E6%9E%84%E9%97%AE%E9%A2%98">Taro2的架构问题</a></li>
+</ul>
+</li>
+<li><a href="#Taro3">Taro3</a><ul>
+<li><a href="#Taro3%E7%9A%84taro-runtime%E8%87%AA%E8%A1%8C%E5%AE%9E%E7%8E%B0%E4%BA%86%E4%B8%80%E5%A5%97-DOMBOM%E7%9A%84api">Taro3的taro-runtime，自行实现了一套 DOM&#x2F;BOM的api</a></li>
+<li><a href="#Taro3%E7%9A%84react%E9%80%82%E9%85%8D">Taro3的react适配</a></li>
+<li><a href="#Taro%E7%9A%84react%E9%80%82%E9%85%8D%E5%85%B7%E4%BD%93%E5%AE%9E%E7%8E%B0">Taro的react适配具体实现</a></li>
+<li><a href="#%E5%A6%82%E4%BD%95%E5%B0%86Taro%E7%9A%84DOM-tree%E6%B8%B2%E6%9F%93%E5%88%B0%E5%B0%8F%E7%A8%8B%E5%BA%8F%E7%9A%84%E8%A7%86%E5%9B%BE%E5%B1%82">如何将Taro的DOM tree渲染到小程序的视图层？</a></li>
+<li><a href="#Taro3-%E5%B0%8F%E7%A8%8B%E5%BA%8FVue-%E5%AE%9E%E7%8E%B0">Taro3 小程序Vue 实现</a></li>
+<li><a href="#Taro3-%E4%BA%8B%E4%BB%B6%E6%9C%BA%E5%88%B6">Taro3 事件机制</a></li>
+<li><a href="#Taro3%E7%9A%84%E6%9E%B6%E6%9E%84%E7%89%B9%E7%82%B9">Taro3的架构特点</a></li>
+<li><a href="#Taro3%E7%9A%84%E6%9E%B6%E6%9E%84%E4%BC%98%E7%BC%BA%E7%82%B9%E8%87%AA%E6%88%91%E5%88%86%E6%9E%90">Taro3的架构优缺点自我分析</a></li>
+<li><a href="#Taro3%E7%9A%84%E8%BF%90%E8%A1%8C%E6%97%B6%E4%BC%98%E5%8C%96">Taro3的运行时优化</a><ul>
+<li><a href="#%E7%B2%BE%E7%AE%80%E7%9A%84-DOMBOM-API">精简的 DOM&#x2F;BOM API</a></li>
+<li><a href="#Taro3%E6%9B%B4%E6%96%B0%E4%BC%98%E5%8C%96">Taro3更新优化</a></li>
+<li><a href="#%E5%8C%85%E4%BD%93%E7%A7%AF%E4%BC%98%E5%8C%96">包体积优化</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="Taro-是什么？"><a href="#Taro-是什么？" class="headerlink" title="Taro 是什么？"></a>Taro 是什么？</h3><blockquote>
+<p>📌多端统一开发解决方案</p>
+</blockquote>
+<blockquote>
+<p>使用Taro，只书写一套代码，再通过Taro的编译工具，将源代码分别编译出可以在不同端（微信小程序、H5、RN等）运行的代码。</p>
+</blockquote>
+<h3 id="Taro2"><a href="#Taro2" class="headerlink" title="Taro2"></a>Taro2</h3><blockquote>
+<p>📌Taro2 是一个重编译时轻运行时的框架</p>
+</blockquote>
+<p>Taro2 架构主要分为：<strong>编译时</strong> 和 <strong>运行时</strong>。其中编译时主要是将 Taro 代码通过 <a target="_blank" rel="noopener" href="https://babeljs.io/" title="Babel">Babel</a> 转换成 小程序的代码，如：<code>JS</code>、<code>WXML</code>、<code>WXSS</code>、<code>JSON</code>。运行时主要是进行一些：生命周期、事件、data 等部分的处理和对接（运行时和React没有关系的）</p>
+<p><img src="/img/image_LbpYX-WYMf.png" srcset="/img/loading.gif" lazyload></p>
+<h4 id="Taro2编译问题"><a href="#Taro2编译问题" class="headerlink" title="Taro2编译问题"></a>Taro2编译问题</h4><p><img src="/img/image_ecTM4qsics.png" srcset="/img/loading.gif" lazyload></p>
+<p>静态template转动态JSX相对简单，但是反过来却相当困难，这是因为JSX过于灵活，Taro2采用穷举的方式对JSX写法进行一一适配，工作量大。</p>
+<h4 id="Taro2的架构特点"><a href="#Taro2的架构特点" class="headerlink" title="Taro2的架构特点"></a>Taro2的架构特点</h4><ul>
+<li><strong>重编译时，轻运行时</strong>：这从两边代码行数的对比就可见一斑。</li>
+<li>编译后代码与 React 无关：Taro 只是在开发时遵循了 React 的语法，但与React DSL 强绑定</li>
+<li>直接使用 Babel 进行编译：这也导致当前 Taro 在工程化和插件方面的羸弱。</li>
+</ul>
+<h4 id="Taro2的架构问题"><a href="#Taro2的架构问题" class="headerlink" title="Taro2的架构问题"></a>Taro2的架构问题</h4><ul>
+<li>React DSL 强绑定</li>
+<li>React新特性需要手动对接</li>
+<li>JSX适配工作量大，限制多</li>
+<li>错误栈复杂，没有sourceMap（和React没关系，错误是从内部抛出的）</li>
+</ul>
+<h2 id="Taro3"><a href="#Taro3" class="headerlink" title="Taro3"></a>Taro3</h2><blockquote>
+<p>📌Taro3重运行时跨端框架</p>
+</blockquote>
+<h4 id="Taro3的taro-runtime，自行实现了一套-DOM-BOM的api"><a href="#Taro3的taro-runtime，自行实现了一套-DOM-BOM的api" class="headerlink" title="Taro3的taro-runtime，自行实现了一套 DOM&#x2F;BOM的api"></a><strong>Taro3的taro-runtime，自行实现了一套 DOM&#x2F;BOM的api</strong></h4><p>无论开发这是用的是什么框架，React 也好，Vue 也罢，最终代码经过运行之后都是调用了浏览器的那几个 BOM&#x2F;DOM 的 API ，如：<code>createElement</code>、<code>appendChild</code>、<code>removeChild</code> 等。</p>
+<p><img src="https://img10.360buyimg.com/ling/jfs/t1/91591/19/8966/30891/5e09f712E6e7f1df8/c3cbbead85810461.jpg" srcset="/img/loading.gif" lazyload></p>
+<p>因此，我们创建了 <a target="_blank" rel="noopener" href="https://github.com/NervJS/taro/tree/next/packages/taro-runtime" title="taro-runtime">taro-runtime</a> 的包，然后在这个包中实现了 <strong>一套 高效、精简版的 DOM&#x2F;BOM API</strong>（下面的 UML 图只是反映了几个主要的类的结构和关系）：</p>
+<p><img src="https://img12.360buyimg.com/ling/jfs/t1/107806/8/2825/294525/5e09f810E8d32975f/ec84acddae669131.png" srcset="/img/loading.gif" lazyload></p>
+<p>然后，我们通过 Webpack 的 <a target="_blank" rel="noopener" href="https://webpack.js.org/plugins/provide-plugin/" title="ProvidePlugin">ProvidePlugin</a> 插件，注入到小程序的逻辑层。</p>
+<h4 id="Taro3的react适配"><a href="#Taro3的react适配" class="headerlink" title="Taro3的react适配"></a>Taro3的react适配</h4><p><img src="https://img10.360buyimg.com/ling/jfs/t1/93547/36/9145/40000/5e09f948Edd646b65/ce37c0d099b7f702.jpg" srcset="/img/loading.gif" lazyload></p>
+<p>最上层是 React 的核心部分 <code>react-core</code> ，中间是 <code>react-reconciler</code>，其的职责是维护 <code>VirtualDOM</code> 树，内部实现了 <code>Diff/Fiber</code> 算法，决定什么时候更新、以及要更新什么。</p>
+<p>而 <code>Renderer</code> 负责具体平台的渲染工作，它会提供宿主组件、处理事件等等。例如 <code>React-DOM</code> 就是一个渲染器，负责 DOM 节点的渲染和 DOM 事件处理。</p>
+<p><strong>Taro的React的适配，本质上是实现了一个React的自定义的Renderer，通过 taro-react包来连接 react-reconciler 和 taro-runtime</strong></p>
+<p><img src="https://img13.360buyimg.com/ling/jfs/t1/90851/28/9324/88846/5e0d9374Ec9b1a530/6a494163f77c6dd7.jpg" srcset="/img/loading.gif" lazyload></p>
+<h4 id="Taro的react适配具体实现"><a href="#Taro的react适配具体实现" class="headerlink" title="Taro的react适配具体实现"></a>Taro的react适配具体实现</h4><p>具体的实现主要分为两步：</p>
+<ol>
+<li>实现 <code>react-reconciler</code> 的 <code>hostConfig</code> 配置，即在 <code>hostConfig</code> 的方法中调用对应的 Taro BOM&#x2F;DOM 的 API。</li>
+<li>实现 render 函数（类似于 <code>ReactDOM.render</code>）方法，可以看成是创建 <code>Taro DOM Tree</code> 的容器。</li>
+</ol>
+<p><img src="https://img14.360buyimg.com/ling/jfs/t1/93510/31/8909/48959/5e09fa87E1d831f7e/5d6f1f945c23e529.jpg" srcset="/img/loading.gif" lazyload></p>
+<h4 id="如何将Taro的DOM-tree渲染到小程序的视图层？"><a href="#如何将Taro的DOM-tree渲染到小程序的视图层？" class="headerlink" title="如何将Taro的DOM tree渲染到小程序的视图层？"></a>如何将Taro的DOM tree渲染到小程序的视图层？</h4><blockquote>
+<p>📌小程序组件模版化，Taro Dom Tree 递归渲染模版</p>
+</blockquote>
+<p>我们将小程序的所有组件挨个进行<strong>模版化处理</strong>，从而得到小程序组件对应的template模版，然后基于template将Taro Dom Tree 进行递归渲染</p>
+<p><img src="https://img10.360buyimg.com/ling/jfs/t1/91642/11/9016/45574/5e09fc9dE03db038c/f87d7fc69e04b26e.jpg" srcset="/img/loading.gif" lazyload></p>
+<p>整个 Taro Next 的 React 实现流程图如下：</p>
+<p><img src="https://img11.360buyimg.com/ling/jfs/t1/106748/9/9067/61495/5e09fd1eE47733747/a11b3ef8b1a7f791.jpg" srcset="/img/loading.gif" lazyload></p>
+<h4 id="Taro3-小程序Vue-实现"><a href="#Taro3-小程序Vue-实现" class="headerlink" title="Taro3 小程序Vue 实现"></a>Taro3 小程序Vue 实现</h4><p>别看 React 和 Vue 在开发时区别那么大，其实在实现了 BOM&#x2F;DOM API 之后，它们之间的区别就很小了。</p>
+<p>Vue 和 React 最大的区别就在于运行时的 <code>CreateVuePage</code> 方法，这个方法里进行了一些运行时的处理，比如：生命周期的对齐。</p>
+<p><img src="https://img30.360buyimg.com/ling/jfs/t1/96356/5/8961/15030/5e0aae8aE452804bd/f4c7df38129d99c5.jpg" srcset="/img/loading.gif" lazyload></p>
+<p>其他的部分，如通过 BOM&#x2F;DOM 方法构建、修改 DOM Tree 及渲染原理，都是和 React 一致的。</p>
+<h4 id="Taro3-事件机制"><a href="#Taro3-事件机制" class="headerlink" title="Taro3 事件机制"></a>Taro3 事件机制</h4><p>首先的 Taro Next 事件，具体的实现方式如下：</p>
+<ol>
+<li>在 小程序组件的模版化过程中，将所有事件方法全部指定为 调用 ev 函数，如：<code>bindtap</code>、<code>bindchange</code>、<code>bindsubmit</code>等。</li>
+<li>在 运行时实现 <code>eventHandler</code> 函数，和 eh 方法绑定，收集所有的小程序事件</li>
+<li>通过 <code>document.getElementById()</code> 方法获取触发事件对应的 <code>TaroNode</code></li>
+<li>通过 <code>createEvent()</code> 创建符合规范的 <code>TaroEvent</code></li>
+<li>调用 <code>TaroNode.dispatchEvent</code> 重新触发事件</li>
+</ol>
+<p><img src="https://img10.360buyimg.com/ling/jfs/t1/103912/33/8987/52864/5e0ab09fEcdcb31c2/d29510c9bc5dd255.jpg" srcset="/img/loading.gif" lazyload></p>
+<p>可以看到，Taro Next 事件本质上是<strong>基于 Taro DOM 实现了一套自己的事件机制</strong>，这样做的好处之一是，无论小程序是否支持事件的冒泡与捕获，Taro 都能支持。</p>
+<h4 id="Taro3的架构特点"><a href="#Taro3的架构特点" class="headerlink" title="Taro3的架构特点"></a>Taro3的架构特点</h4><ul>
+<li><strong>无 DSL 限制</strong>：无论是你们团队是 React 还是 Vue 技术栈，都能够使用 Taro 开发</li>
+<li><strong>模版动态构建</strong>：和之前模版通过编译生成的不同，Taro Next 的模版是固定的，然后基于组件的 template，动态 “递归” 渲染整棵 Taro DOM 树。</li>
+<li><strong>新特性无缝支持</strong>：由于 Taro Next 本质上是将 React&#x2F;Vue 运行在小程序上，因此，各种新特性也就无缝支持了。</li>
+<li><strong>社区贡献更简单</strong>：错误栈将和 React&#x2F;Vue 一致，团队只需要维护核心的 taro-runtime。</li>
+<li><strong>基于 Webpack</strong>：Taro Next 基于 Webpack 实现了多端的工程化，提供了插件功能。</li>
+</ul>
+<h4 id="Taro3的架构优缺点自我分析"><a href="#Taro3的架构优缺点自我分析" class="headerlink" title="Taro3的架构优缺点自我分析"></a>Taro3的架构优缺点自我分析</h4><ul>
+<li>优点<ul>
+<li>无DSL限制</li>
+<li>新特性无缝支持，因为Taro3本质是将Vue&#x2F;React运行在小程序上，因此，各种新特性也可以无缝支持（Taro只是定义了一套DOM&#x2F;BOM api，vue&#x2F;react 核心代码依然正常运行）</li>
+</ul>
+</li>
+<li>缺点<ul>
+<li>由于taro3的编译方案（多一层Taro Dom&#x2F;Bom作中转，而且本质是将react&#x2F;vue运行在小程序），性能上肯定不及Taro2&#x2F;uniapp等静态模版编译方案</li>
+<li>Taro3的template递归渲染方式存在一定缺陷<ul>
+<li>初始化全量setData模版渲染，因此初始化性能比较低</li>
+<li>视图更新速度取决于更新幅度，一旦出现大面积的渲染更新，setData数据量会比静态模版渲染方式高，性能也会随之降低</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="Taro3的运行时优化"><a href="#Taro3的运行时优化" class="headerlink" title="Taro3的运行时优化"></a>Taro3的运行时优化</h3><p>前面提到，同等条件下，编译时做的工作越多，也就意味着运行时做的工作越少，性能会更好。</p>
+<p><img src="https://img20.360buyimg.com/ling/jfs/t1/85061/33/9155/42050/5e0ae1afE263741c9/7a1664f1a6769d7a.jpg" srcset="/img/loading.gif" lazyload></p>
+<p>可以发现，相比原生小程序，Taro Next 多了红色部分的带来的性能隐患，如：引入 React&#x2F;Vue 带来的 包的 Size 增加，运行时的损耗、Taro DOM Tree 的构建和更新、DOM data 初始化和更新。</p>
+<p>而我们真正能做的，只有绿色部分，也就是：</p>
+<ul>
+<li><strong>Taro DOM Tree 的构建和更新</strong></li>
+<li><strong>DOM data 初始化和更新</strong></li>
+</ul>
+<h4 id="精简的-DOM-BOM-API"><a href="#精简的-DOM-BOM-API" class="headerlink" title="精简的 DOM&#x2F;BOM API"></a>精简的 DOM&#x2F;BOM API</h4><p>在 Taro DOM Tree 的构建和更新阶段，我们实现了一套仅实现了高效的、精简版 DOM&#x2F;BOM API，而且仅仅实现了必要的。</p>
+<p>Github 上有一个仓库 <a target="_blank" rel="noopener" href="https://github.com/jsdom/jsdom" title="jsdom">jsdom</a>，基本上是在 Node.js 上实现了一套 Web 标准的 DOM&#x2F;BOM ，这个仓库的代码在压缩前大概有 2.1M，而 Taro Next 的核心的 DOM&#x2F;BOM API 代码才 1000 行不到。</p>
+<p>因此，我们最大限度的保证了 Taro DOM Tree 构建和更新阶段的性能。</p>
+<p><img src="https://img10.360buyimg.com/ling/jfs/t1/93372/24/9137/11878/5e0ae512E79c720f9/ab326eef51d168a5.jpg" srcset="/img/loading.gif" lazyload></p>
+<h4 id="Taro3更新优化"><a href="#Taro3更新优化" class="headerlink" title="Taro3更新优化"></a>Taro3更新优化</h4><p>无论是 React 还是 Vue ，最终都会调用 Taro DOM 方法，如：<code>appendChild</code>、<code>insertChild</code> 等。</p>
+<p>这些方法在修改 Taro DOM Tree 的同时，还会调用 <code>enqueueUpdate</code> 方法，这个方法能获取到每一个 DOM 方法最终修改的节点路径和值，如：<code>&#123;root.cn.[0].cn.[4].value: &quot;1&quot;&#125;</code>，并通过 <code>setData</code> 方法更新到视图层。</p>
+<p><img src="https://img10.360buyimg.com/ling/jfs/t1/86893/14/9016/38824/5e0ac06aE21db32b1/c4bece64d139dd8e.jpg" srcset="/img/loading.gif" lazyload></p>
+<p>可以看到，这里<strong>更新的粒度是 DOM 级别</strong>，只有最终发生改变的 DOM 才会被更新过去，相对于之前 data 级别的更新会更加精准，性能更好。</p>
+<blockquote>
+<p>data更新是会有冗余的，并不是所有data更新会引起dom更新</p>
+</blockquote>
+<h4 id="包体积优化"><a href="#包体积优化" class="headerlink" title="包体积优化"></a>包体积优化</h4><p>首先我们来看包 Size，下面的表格是 TodoMVC 的例子，在原生、Taro Old、Taro Next 等情况下的包大小对比，可以看到，引入 React&#x2F;Vue 后，包大小在 Gzip 情况下大概增加了 30k 左右。</p>
+<p><img src="https://img12.360buyimg.com/ling/jfs/t1/100878/15/9005/22516/5e0ae322E690a60fb/9b3a09bf64a51871.jpg" srcset="/img/loading.gif" lazyload></p>
+<p>不过我们在前面一再强调：和之前模版通过编译生成的不同，Taro Next 的模版是固定的，然后基于组件的 template，动态 “递归” 渲染整棵 Taro DOM 树。也就是说，<strong>Taro Next 的 WXML 大小是有上限的</strong>。</p>
+<p>随着项目的增加，页面越来越多，原生的项目 WXML 体积会不断增加，而 Taro Next 不会。也就是说，当页面的数量超过一个临界点时，Taro Next 的包体积可能会更小。因此，包 Size 的问题不足为虑。</p>
+<p><img src="https://img30.360buyimg.com/ling/jfs/t1/88749/23/9077/15347/5e0ae41cE71f77070/3f24bf6459abf2e9.jpg" srcset="/img/loading.gif" lazyload></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/hybird/" class="category-chain-item">hybird</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/wechat/" class="print-no-link">#wechat</a>
+      
+        <a href="/tags/mini-program/" class="print-no-link">#mini-program</a>
+      
+        <a href="/tags/Taro/" class="print-no-link">#Taro</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Taro技术分析</div>
+      <div>http://arch94.github.io/2023/08/29/Taro/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Arch Sun</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年8月29日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/08/28/Mpvue%E5%8E%9F%E7%90%86%E5%88%86%E6%9E%90/" title="Mpvue原理分析">
+                        <span class="hidden-mobile">Mpvue原理分析</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
