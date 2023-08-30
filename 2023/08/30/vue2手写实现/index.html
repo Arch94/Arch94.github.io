@@ -1,0 +1,651 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/avatar.png">
+  <link rel="icon" href="/img/avatar.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Arch Sun">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="问什么是vue？vue是一套开源的用于构建用户界面的渐进式MVVM框架，通过compile来解析模版指令，通过Observer劫持监听数据变化，通过dep收集依赖，通过watcher更新视图。 mvue.js 1234567891011121314151617181920212223242526272829303132333435363738394041424344454647484950515">
+<meta property="og:type" content="article">
+<meta property="og:title" content="vue2手写实现">
+<meta property="og:url" content="http://arch94.github.io/2023/08/30/vue2%E6%89%8B%E5%86%99%E5%AE%9E%E7%8E%B0/index.html">
+<meta property="og:site_name" content="Arch&#39;s Blog">
+<meta property="og:description" content="问什么是vue？vue是一套开源的用于构建用户界面的渐进式MVVM框架，通过compile来解析模版指令，通过Observer劫持监听数据变化，通过dep收集依赖，通过watcher更新视图。 mvue.js 1234567891011121314151617181920212223242526272829303132333435363738394041424344454647484950515">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://arch94.github.io/img/iShot2021-01-22%2016.11.32_DbQLo_urMf.png">
+<meta property="article:published_time" content="2023-08-30T02:42:00.000Z">
+<meta property="article:modified_time" content="2023-08-30T02:43:26.838Z">
+<meta property="article:author" content="Arch Sun">
+<meta property="article:tag" content="vue">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://arch94.github.io/img/iShot2021-01-22%2016.11.32_DbQLo_urMf.png">
+  
+  
+  
+  <title>vue2手写实现 - Arch&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"arch94.github.io","root":"/","version":"1.9.5-a","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Arch&#39;s blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="vue2手写实现"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-08-30 10:42" pubdate>
+          2023年8月30日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          8k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          67 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">vue2手写实现</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p><img src="/img/iShot2021-01-22%2016.11.32_DbQLo_urMf.png" srcset="/img/loading.gif" lazyload></p>
+<h4 id="问什么是vue？"><a href="#问什么是vue？" class="headerlink" title="问什么是vue？"></a>问什么是vue？</h4><p>vue是一套开源的用于构建用户界面的渐进式MVVM框架，通过compile来解析模版指令，通过Observer劫持监听数据变化，通过dep收集依赖，通过watcher更新视图。</p>
+<p>mvue.js</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">class</span> <span class="hljs-title class_">mvue</span> &#123;<br>  <span class="hljs-title function_">constructor</span>(<span class="hljs-params">options</span>)&#123;<br>    <span class="hljs-variable language_">this</span>.<span class="hljs-property">$el</span> = options.<span class="hljs-property">el</span>;<br>    <span class="hljs-variable language_">this</span>.<span class="hljs-property">$data</span> = options.<span class="hljs-property">data</span>;<br>    <span class="hljs-variable language_">this</span>.<span class="hljs-property">$options</span> = options;<br>    <span class="hljs-keyword">if</span>(<span class="hljs-variable language_">this</span>.<span class="hljs-property">$el</span>)&#123;<br>      <span class="hljs-keyword">new</span> <span class="hljs-title class_">Observer</span>(<span class="hljs-variable language_">this</span>.<span class="hljs-property">$data</span>);<br>      <span class="hljs-keyword">new</span> <span class="hljs-title class_">Compile</span>(<span class="hljs-variable language_">this</span>.<span class="hljs-property">$el</span>,<span class="hljs-variable language_">this</span>);<br>      <span class="hljs-variable language_">this</span>.<span class="hljs-title function_">proxyData</span>(<span class="hljs-variable language_">this</span>.<span class="hljs-property">$data</span>);<br>    &#125;<br>  &#125;<br>  <span class="hljs-title function_">proxyData</span>(<span class="hljs-params">data</span>)&#123;<br>    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">const</span> key <span class="hljs-keyword">in</span> data)&#123;<br>      <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">defineProperty</span>(<span class="hljs-variable language_">this</span>,key,&#123;<br>        <span class="hljs-title function_">get</span>(<span class="hljs-params"></span>)&#123;<br>          <span class="hljs-keyword">return</span> data[key];<br>        &#125;,<br>        <span class="hljs-title function_">set</span>(<span class="hljs-params">newVal</span>)&#123;<br>          data[key] = newVal;<br>        &#125;<br>      &#125;)<br>    &#125;<br>    <br>  &#125;<br>&#125;<br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Compile</span>&#123;<br>  <span class="hljs-title function_">constructor</span>(<span class="hljs-params">el,vm</span>)&#123;<br>    <span class="hljs-variable language_">this</span>.<span class="hljs-property">el</span> = <span class="hljs-variable language_">this</span>.<span class="hljs-title function_">isElementNode</span>(el) ? el : <span class="hljs-variable language_">document</span>.<span class="hljs-title function_">querySelector</span>(el)<br>    <span class="hljs-variable language_">this</span>.<span class="hljs-property">vm</span> = vm;<br>    <span class="hljs-keyword">const</span> fragment = <span class="hljs-variable language_">this</span>.<span class="hljs-title function_">node2Fragment</span>(<span class="hljs-variable language_">this</span>.<span class="hljs-property">el</span>);<br>    <span class="hljs-variable language_">this</span>.<span class="hljs-title function_">compile</span>(fragment);<br>    <span class="hljs-variable language_">this</span>.<span class="hljs-property">el</span>.<span class="hljs-title function_">appendChild</span>(fragment);<br>  &#125;<br>  <span class="hljs-title function_">isElementNode</span>(<span class="hljs-params">node</span>)&#123;<br>    <span class="hljs-keyword">return</span> node.<span class="hljs-property">nodeType</span> === <span class="hljs-number">1</span>;<br>  &#125;<br>  <span class="hljs-title function_">node2Fragment</span>(<span class="hljs-params">el</span>)&#123;<br>    <span class="hljs-keyword">let</span> fragment = <span class="hljs-variable language_">document</span>.<span class="hljs-title function_">createDocumentFragment</span>();<br>    <span class="hljs-keyword">let</span> firstChild;<br>    <span class="hljs-keyword">while</span>(firstChild = el.<span class="hljs-property">firstChild</span>)&#123;<br>      fragment.<span class="hljs-title function_">appendChild</span>(firstChild);<br>    &#125;<br>    <span class="hljs-keyword">return</span> fragment;<br>  &#125;<br>  <span class="hljs-title function_">compile</span>(<span class="hljs-params">fragment</span>)&#123;<br>    <span class="hljs-keyword">let</span> childNodes = fragment.<span class="hljs-property">childNodes</span>;<br>    <span class="hljs-comment">//转数组</span><br>    [...childNodes].<span class="hljs-title function_">forEach</span>(<span class="hljs-function"><span class="hljs-params">childNode</span> =&gt;</span> &#123;<br>       <span class="hljs-keyword">if</span>(<span class="hljs-variable language_">this</span>.<span class="hljs-title function_">isElementNode</span>(childNode))&#123;<br>         <span class="hljs-variable language_">this</span>.<span class="hljs-title function_">compileElement</span>(childNode);<br>       &#125; <span class="hljs-keyword">else</span> &#123;<br>         <span class="hljs-variable language_">this</span>.<span class="hljs-title function_">compileText</span>(childNode);<br>       &#125;<br>       <span class="hljs-comment">//递归子元素的子元素</span><br>       <span class="hljs-keyword">if</span>(childNode.<span class="hljs-property">childNodes</span> &amp;&amp; childNode.<span class="hljs-property">childNodes</span>.<span class="hljs-property">length</span>)&#123;<br>        <span class="hljs-variable language_">this</span>.<span class="hljs-title function_">compile</span>(childNode);<br>       &#125;<br>    &#125;)<br>  &#125;<br>  <span class="hljs-title function_">compileElement</span>(<span class="hljs-params">node</span>)&#123;<br>    <span class="hljs-keyword">const</span> attributes = node.<span class="hljs-property">attributes</span>;<br>    [...attributes].<span class="hljs-title function_">forEach</span>(<span class="hljs-function"><span class="hljs-params">attr</span>=&gt;</span>&#123;<br>      <span class="hljs-keyword">const</span> &#123;name,value&#125; = attr;<br>      <span class="hljs-keyword">if</span>(<span class="hljs-variable language_">this</span>.<span class="hljs-title function_">isDirective</span>(name))&#123;<span class="hljs-comment">//是一个指令 v-text v-html v-on:click </span><br>        <span class="hljs-keyword">const</span> [,directive] =  name.<span class="hljs-title function_">split</span>(<span class="hljs-string">&#x27;-&#x27;</span>); <br>        <span class="hljs-keyword">const</span> [dirName,eventName] = directive.<span class="hljs-title function_">split</span>(<span class="hljs-string">&#x27;:&#x27;</span>) <span class="hljs-comment">//v-on:click  v-bind:href</span><br>        <span class="hljs-comment">//更新数据，数据驱动视图</span><br>        compileUtil[dirName](node,value,<span class="hljs-variable language_">this</span>.<span class="hljs-property">vm</span>,eventName)<br>        <span class="hljs-comment">//删除标签上原有的指令</span><br>        node.<span class="hljs-title function_">removeAttribute</span>(<span class="hljs-string">&#x27;v-&#x27;</span>+directive);<br>      &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(<span class="hljs-variable language_">this</span>.<span class="hljs-title function_">isEventName</span>(name))&#123;<span class="hljs-comment">//@click=&quot;xxxs&quot;</span><br>        <span class="hljs-keyword">const</span> eventName = name.<span class="hljs-title function_">split</span>(<span class="hljs-string">&#x27;@&#x27;</span>)[<span class="hljs-number">1</span>];<br>        <span class="hljs-comment">//更新数据，数据驱动视图</span><br>        compileUtil[<span class="hljs-string">&#x27;on&#x27;</span>](node,value,<span class="hljs-variable language_">this</span>.<span class="hljs-property">vm</span>,eventName);<br>      &#125;<br>    &#125;)<br>  &#125;<br><br>  <span class="hljs-title function_">isEventName</span>(<span class="hljs-params">attrName</span>)&#123;<br>    <span class="hljs-keyword">return</span> attrName.<span class="hljs-title function_">indexOf</span>(<span class="hljs-string">&#x27;@&#x27;</span>) == <span class="hljs-number">0</span>;<br>  &#125;<br><br>  <span class="hljs-title function_">compileText</span>(<span class="hljs-params">node</span>)&#123;<br>    <span class="hljs-keyword">const</span> content = node.<span class="hljs-property">textContent</span>;<br>    <span class="hljs-keyword">if</span>(<span class="hljs-regexp">/\&#123;\&#123;(.+?)\&#125;\&#125;/</span>.<span class="hljs-title function_">test</span>(content))&#123;<br>      compileUtil[<span class="hljs-string">&#x27;text&#x27;</span>](node,content,<span class="hljs-variable language_">this</span>.<span class="hljs-property">vm</span>)<br>    &#125;<br>  &#125;<br><br>  <span class="hljs-title function_">isDirective</span>(<span class="hljs-params">name</span>)&#123;<br>    <span class="hljs-keyword">return</span> name.<span class="hljs-title function_">startsWith</span>(<span class="hljs-string">&#x27;v-&#x27;</span>)?<span class="hljs-attr">true</span>:<span class="hljs-literal">false</span>;<br>  &#125;<br>&#125;<br><br><span class="hljs-keyword">const</span> compileUtil = &#123;<br>  <span class="hljs-title function_">getVal</span>(<span class="hljs-params">expr,vm</span>)&#123;<br>    <span class="hljs-keyword">return</span> expr.<span class="hljs-title function_">split</span>(<span class="hljs-string">&#x27;.&#x27;</span>).<span class="hljs-title function_">reduce</span>(<span class="hljs-function">(<span class="hljs-params">data,currentVal</span>)=&gt;</span>&#123;<br>      <span class="hljs-keyword">return</span> data[currentVal]<br>    &#125;,vm.<span class="hljs-property">$data</span>)<br>  &#125;,<br>  <span class="hljs-title function_">setVal</span>(<span class="hljs-params">expr,vm,inputVal</span>)&#123;<br>    expr.<span class="hljs-title function_">split</span>(<span class="hljs-string">&#x27;.&#x27;</span>).<span class="hljs-title function_">reduce</span>(<span class="hljs-function">(<span class="hljs-params">data,currentVal</span>)=&gt;</span>&#123;<br>      data[currentVal] = inputVal<br>    &#125;,vm.<span class="hljs-property">$data</span>)<br>  &#125;,<br>  <span class="hljs-title function_">getContentVal</span>(<span class="hljs-params">expr,vm</span>)&#123;<br>    <span class="hljs-keyword">return</span> expr.<span class="hljs-title function_">replace</span>(<span class="hljs-regexp">/\&#123;\&#123;(.+?)\&#125;\&#125;/gi</span>,<span class="hljs-function">(<span class="hljs-params">...args</span>) =&gt;</span> &#123;<br>      <span class="hljs-keyword">return</span> <span class="hljs-variable language_">this</span>.<span class="hljs-title function_">getVal</span>(args[<span class="hljs-number">1</span>],vm);<br>    &#125;)<br>  &#125;,<br>  <span class="hljs-title function_">text</span>(<span class="hljs-params">node,expr,vm</span>)&#123;<br>    <span class="hljs-keyword">let</span> value;<br>    <span class="hljs-keyword">if</span>(expr.<span class="hljs-title function_">indexOf</span>(<span class="hljs-string">&#x27;&#123;&#123;&#x27;</span>)!==-<span class="hljs-number">1</span>)&#123;<br>      value = expr.<span class="hljs-title function_">replace</span>(<span class="hljs-regexp">/\&#123;\&#123;(.+?)\&#125;\&#125;/gi</span>,<span class="hljs-function">(<span class="hljs-params">...args</span>) =&gt;</span> &#123;<br>        <span class="hljs-keyword">new</span> <span class="hljs-title class_">Watcher</span>(vm,args[<span class="hljs-number">1</span>],<span class="hljs-function">()=&gt;</span>&#123;<br>          <span class="hljs-variable language_">this</span>.<span class="hljs-property">updater</span>.<span class="hljs-title function_">textUpdater</span>(node,<span class="hljs-variable language_">this</span>.<span class="hljs-title function_">getContentVal</span>(expr,vm));<br>        &#125;)<br>        <span class="hljs-keyword">return</span> <span class="hljs-variable language_">this</span>.<span class="hljs-title function_">getVal</span>(args[<span class="hljs-number">1</span>],vm);<br>      &#125;)<br>    &#125; <span class="hljs-keyword">else</span> &#123;<br>      value = <span class="hljs-variable language_">this</span>.<span class="hljs-title function_">getVal</span>(expr,vm);<br>      <span class="hljs-keyword">new</span> <span class="hljs-title class_">Watcher</span>(vm,expr,<span class="hljs-function"><span class="hljs-params">newVal</span>=&gt;</span>&#123;<br>        <span class="hljs-variable language_">this</span>.<span class="hljs-property">updater</span>.<span class="hljs-title function_">textUpdater</span>(node,newVal);<br>      &#125;)<br>    &#125;<br>    <span class="hljs-variable language_">this</span>.<span class="hljs-property">updater</span>.<span class="hljs-title function_">textUpdater</span>(node,value);<br>  &#125;,<br>  <span class="hljs-title function_">html</span>(<span class="hljs-params">node,expr,vm</span>)&#123;<br>    <span class="hljs-comment">//1. getVal 触发 observer数据监听器的 get方法，没有 Dep.target</span><br>    <span class="hljs-keyword">const</span> value = <span class="hljs-variable language_">this</span>.<span class="hljs-title function_">getVal</span>(expr,vm);<br>    <span class="hljs-comment">// 2. 初始化视图</span><br>    <span class="hljs-variable language_">this</span>.<span class="hljs-property">updater</span>.<span class="hljs-title function_">htmlUpdater</span>(node,value);<br>    <span class="hljs-comment">//3.新建 观察者，初始化内部调用compileUtil.getVal获取旧值，并将Dep.target设置为此watcher</span><br>    <span class="hljs-comment">//4.再次触发 observer数据监听器的 get方法，将该观察者加入到 这个expr值的订阅器Dep中</span><br>    <span class="hljs-keyword">new</span> <span class="hljs-title class_">Watcher</span>(vm,expr,<span class="hljs-function"><span class="hljs-params">newVal</span>=&gt;</span>&#123;<br>      <span class="hljs-variable language_">this</span>.<span class="hljs-property">updater</span>.<span class="hljs-title function_">htmlUpdater</span>(node,newVal);<br>    &#125;)<br>    <span class="hljs-comment">//5.在 控制台 vm.$data.msg2 = &#x27;xdddd&#x27; 触发数据监听器 dep.notify =&gt; dep.update =&gt; 更新视图</span><br>  &#125;,<br>  <span class="hljs-title function_">model</span>(<span class="hljs-params">node,expr,vm</span>)&#123;<br>    <span class="hljs-keyword">const</span> value = <span class="hljs-variable language_">this</span>.<span class="hljs-title function_">getVal</span>(expr,vm);<br>    <span class="hljs-variable language_">this</span>.<span class="hljs-property">updater</span>.<span class="hljs-title function_">modelUpdater</span>(node,value);<br>    <span class="hljs-comment">//数据=》视图</span><br>    <span class="hljs-keyword">new</span> <span class="hljs-title class_">Watcher</span>(vm,expr,<span class="hljs-function"><span class="hljs-params">newVal</span>=&gt;</span>&#123;<br>      <span class="hljs-variable language_">this</span>.<span class="hljs-property">updater</span>.<span class="hljs-title function_">modelUpdater</span>(node,newVal);<br>    &#125;)<br>    <span class="hljs-comment">//视图=》数据=》视图</span><br>    node.<span class="hljs-title function_">addEventListener</span>(<span class="hljs-string">&#x27;input&#x27;</span>,<span class="hljs-function">(<span class="hljs-params">e</span>)=&gt;</span>&#123;<br>      <span class="hljs-variable language_">this</span>.<span class="hljs-title function_">setVal</span>(expr,vm,e.<span class="hljs-property">target</span>.<span class="hljs-property">value</span>)<br>    &#125;)<br>  &#125;,<br>  <span class="hljs-title function_">on</span>(<span class="hljs-params">node,expr,vm,eventName</span>)&#123;<br>    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(node,expr,vm,eventName)<br>    <span class="hljs-keyword">let</span> fn = vm.<span class="hljs-property">$options</span>.<span class="hljs-property">methods</span> &amp;&amp; vm.<span class="hljs-property">$options</span>.<span class="hljs-property">methods</span>[expr];<br>    node.<span class="hljs-title function_">addEventListener</span>(eventName,fn.<span class="hljs-title function_">bind</span>(vm),<span class="hljs-literal">false</span>);<br>  &#125;,<br>  <span class="hljs-title function_">bind</span>(<span class="hljs-params">node,expr,vm,attrName</span>)&#123;<br>    <span class="hljs-comment">//do self</span><br>    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(node,expr,vm,attrName)<br>    <span class="hljs-keyword">let</span> value = <span class="hljs-variable language_">this</span>.<span class="hljs-title function_">getVal</span>(expr,vm);<br>    <span class="hljs-keyword">if</span>(attrName === <span class="hljs-string">&#x27;class&#x27;</span>)&#123;<span class="hljs-comment">//实际css设置更加复杂，expr 不仅会是一个对象，也会是[] &#123;&#125; 的对象</span><br>      <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">assign</span>(node.<span class="hljs-property">style</span>,value)<br>    &#125; <span class="hljs-keyword">else</span> &#123;<br>      node.<span class="hljs-title function_">setAttribute</span>(attrName,value)<br>    &#125;<br>  &#125;,<br>  <span class="hljs-attr">updater</span>:&#123;<br>    <span class="hljs-title function_">textUpdater</span>(<span class="hljs-params">node,value</span>)&#123;<br>      node.<span class="hljs-property">textContent</span> = value;<br>    &#125;,<br>    <span class="hljs-title function_">htmlUpdater</span>(<span class="hljs-params">node,value</span>)&#123;<br>      node.<span class="hljs-property">innerHTML</span> = value;<br>    &#125;,<br>    <span class="hljs-title function_">modelUpdater</span>(<span class="hljs-params">node,value</span>)&#123;<br>      node.<span class="hljs-property">value</span> = value;<br>    &#125;<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>observer.js</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Watcher</span> &#123;<br>  <span class="hljs-title function_">constructor</span>(<span class="hljs-params">vm,expr,cb</span>)&#123;<br>    <span class="hljs-variable language_">this</span>.<span class="hljs-property">vm</span> = vm;<br>    <span class="hljs-variable language_">this</span>.<span class="hljs-property">expr</span> = expr;<br>    <span class="hljs-variable language_">this</span>.<span class="hljs-property">cb</span> = cb;<br>    <span class="hljs-comment">//旧值保存</span><br>    <span class="hljs-variable language_">this</span>.<span class="hljs-property">oldVal</span> = <span class="hljs-variable language_">this</span>.<span class="hljs-title function_">getOldVal</span>();<br>  &#125;<br>  <span class="hljs-title function_">getOldVal</span>(<span class="hljs-params"></span>)&#123;<br>    <span class="hljs-comment">//指定target</span><br>    <span class="hljs-title class_">Dep</span>.<span class="hljs-property">target</span> = <span class="hljs-variable language_">this</span>;<br>    <span class="hljs-keyword">const</span> oldVal = compileUtil.<span class="hljs-title function_">getVal</span>(<span class="hljs-variable language_">this</span>.<span class="hljs-property">expr</span>,<span class="hljs-variable language_">this</span>.<span class="hljs-property">vm</span>);<br>    <span class="hljs-comment">//清除target</span><br>    <span class="hljs-title class_">Dep</span>.<span class="hljs-property">target</span> = <span class="hljs-literal">null</span>;<br>    <span class="hljs-keyword">return</span> oldVal;<br>  &#125;<br>  <span class="hljs-title function_">update</span>(<span class="hljs-params"></span>)&#123;<br>    <span class="hljs-keyword">const</span> newVal = compileUtil.<span class="hljs-title function_">getVal</span>(<span class="hljs-variable language_">this</span>.<span class="hljs-property">expr</span>,<span class="hljs-variable language_">this</span>.<span class="hljs-property">vm</span>);<br>    <span class="hljs-keyword">if</span>(newVal !== <span class="hljs-variable language_">this</span>.<span class="hljs-property">oldVal</span>)&#123;<br>      <span class="hljs-variable language_">this</span>.<span class="hljs-title function_">cb</span>(newVal);<br>    &#125;<br>  &#125;<br>&#125;<br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Dep</span> &#123;<br>  <span class="hljs-title function_">constructor</span>(<span class="hljs-params"></span>)&#123;<br>    <span class="hljs-variable language_">this</span>.<span class="hljs-property">subs</span> = [];<br>  &#125;<br>  <span class="hljs-comment">//添加观察者</span><br>  <span class="hljs-title function_">addSub</span>(<span class="hljs-params">watcher</span>)&#123;<br>    <span class="hljs-variable language_">this</span>.<span class="hljs-property">subs</span>.<span class="hljs-title function_">push</span>(watcher);<br>  &#125;<br>  <span class="hljs-comment">//通知观察者去更新</span><br>  <span class="hljs-title function_">notify</span>(<span class="hljs-params"></span>)&#123;<br>    <span class="hljs-variable language_">this</span>.<span class="hljs-property">subs</span>.<span class="hljs-title function_">forEach</span>(<span class="hljs-function"><span class="hljs-params">w</span>=&gt;</span>w.<span class="hljs-title function_">update</span>())<br>  &#125;<br>&#125;<br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Observer</span> &#123;<br>  <span class="hljs-title function_">constructor</span>(<span class="hljs-params">data</span>)&#123;<br>    <span class="hljs-variable language_">this</span>.<span class="hljs-title function_">observe</span>(data)<br>  &#125;<br>  <span class="hljs-comment">/**</span><br><span class="hljs-comment">   * person:&#123;</span><br><span class="hljs-comment">      name:&#x27;111&#x27;,</span><br><span class="hljs-comment">      age:&#x27;26&#x27;</span><br><span class="hljs-comment">    &#125;,</span><br><span class="hljs-comment">    msg:&#x27;model dire&#x27;,</span><br><span class="hljs-comment">   */</span><br>  <span class="hljs-title function_">observe</span>(<span class="hljs-params">data</span>)&#123;<br>    <span class="hljs-keyword">if</span>(data &amp;&amp; <span class="hljs-keyword">typeof</span> data === <span class="hljs-string">&#x27;object&#x27;</span>)&#123;<br>      <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">keys</span>(data).<span class="hljs-title function_">forEach</span>(<span class="hljs-function"><span class="hljs-params">key</span>=&gt;</span>&#123;<br>        <span class="hljs-variable language_">this</span>.<span class="hljs-title function_">defineReactive</span>(data,key,data[key])<br>      &#125;)<br>    &#125;<br>  &#125;<br>  <br>  <span class="hljs-title function_">defineReactive</span>(<span class="hljs-params">data,key,value</span>)&#123;<br>    <span class="hljs-comment">//递归遍历</span><br>    <span class="hljs-variable language_">this</span>.<span class="hljs-title function_">observe</span>(value);<br>    <span class="hljs-keyword">const</span> dep = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Dep</span>();<br>    <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">defineProperty</span>(data,key,&#123;<br>      <span class="hljs-attr">enumerable</span>: <span class="hljs-literal">true</span>,<br>      <span class="hljs-attr">configurable</span>: <span class="hljs-literal">false</span>,<br>      <span class="hljs-title function_">get</span>(<span class="hljs-params"></span>)&#123;<br>        <span class="hljs-comment">//每次取值时调用</span><br>        <span class="hljs-comment">//订阅数据变化时，往dep添加观察者</span><br>        <span class="hljs-title class_">Dep</span>.<span class="hljs-property">target</span> &amp;&amp; dep.<span class="hljs-title function_">addSub</span>(<span class="hljs-title class_">Dep</span>.<span class="hljs-property">target</span>)<br>        <span class="hljs-keyword">return</span> value<br>      &#125;,<br>      <span class="hljs-attr">set</span>:<span class="hljs-function">(<span class="hljs-params">newVal</span>)=&gt;</span>&#123;<br>        <span class="hljs-variable language_">this</span>.<span class="hljs-title function_">observe</span>(newVal)<br>        <span class="hljs-keyword">if</span>(newVal !== value )&#123;<br>          value = newVal;<br>          <span class="hljs-comment">//告诉 dep 通知变化</span><br>          dep.<span class="hljs-title function_">notify</span>();<br>        &#125;<br>      &#125;<br>    &#125;)<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>index.html</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><code class="hljs html"><span class="hljs-tag">&lt;<span class="hljs-name">html</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">head</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">meta</span> <span class="hljs-attr">http-equiv</span>=<span class="hljs-string">&quot;Content-Type&quot;</span> <span class="hljs-attr">content</span>=<span class="hljs-string">&quot;text/html; charset=UTF-8&quot;</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">title</span>&gt;</span>write vue<span class="hljs-tag">&lt;/<span class="hljs-name">title</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">head</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">body</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;app&quot;</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;button&quot;</span> <span class="hljs-attr">v-on:click</span>=<span class="hljs-string">&#x27;xxxs&#x27;</span> <span class="hljs-attr">value</span>=<span class="hljs-string">&quot;button-on&quot;</span>/&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;button&quot;</span> @<span class="hljs-attr">click</span>=<span class="hljs-string">&#x27;xxxs&#x27;</span> <span class="hljs-attr">value</span>=<span class="hljs-string">&quot;button-@&quot;</span>/&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">a</span> <span class="hljs-attr">v-bind:href</span>=<span class="hljs-string">&quot;url&quot;</span>&gt;</span>bind url 百度<span class="hljs-tag">&lt;/<span class="hljs-name">a</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">p</span> <span class="hljs-attr">v-bind:class</span>=<span class="hljs-string">&quot;bindClass&quot;</span>&gt;</span>bind class red<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;text&quot;</span> <span class="hljs-attr">v-html</span>=<span class="hljs-string">&#x27;msg&#x27;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">p</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;text&quot;</span> <span class="hljs-attr">v-text</span>=<span class="hljs-string">&#x27;person.name&#x27;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;text&quot;</span> <span class="hljs-attr">v-model</span>=<span class="hljs-string">&#x27;msg&#x27;</span>/&gt;</span><br>    &#123;&#123;person.name&#125;&#125;-&#123;&#123;person.age&#125;&#125;<br>  <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">&quot;./mvue.js&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">&quot;./observer.js&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="language-javascript"></span><br><span class="language-javascript">    <span class="hljs-keyword">let</span> vm = <span class="hljs-keyword">new</span> <span class="hljs-title function_">mvue</span>(&#123;</span><br><span class="language-javascript">      <span class="hljs-attr">el</span>:<span class="hljs-string">&#x27;#app&#x27;</span>,</span><br><span class="language-javascript">      <span class="hljs-attr">data</span>:&#123;</span><br><span class="language-javascript">        <span class="hljs-attr">person</span>:&#123;</span><br><span class="language-javascript">          <span class="hljs-attr">name</span>:<span class="hljs-string">&#x27;111&#x27;</span>,</span><br><span class="language-javascript">          <span class="hljs-attr">age</span>:<span class="hljs-string">&#x27;26&#x27;</span></span><br><span class="language-javascript">        &#125;,</span><br><span class="language-javascript">        <span class="hljs-attr">msg</span>:<span class="hljs-string">&#x27;model dire&#x27;</span>,</span><br><span class="language-javascript">        <span class="hljs-attr">msg2</span>:<span class="hljs-string">&#x27;&lt;a href=&quot;javascript:void(0);&quot;&gt;html指令&lt;/a&gt;&#x27;</span>,</span><br><span class="language-javascript">        <span class="hljs-attr">msg3</span>:<span class="hljs-string">&#x27;sba&#x27;</span>,</span><br><span class="language-javascript">        <span class="hljs-attr">url</span>:<span class="hljs-string">&#x27;http://www.baidu.com&#x27;</span>,</span><br><span class="language-javascript">        <span class="hljs-attr">bindClass</span>:&#123;</span><br><span class="language-javascript">          <span class="hljs-attr">color</span>:<span class="hljs-string">&#x27;red&#x27;</span>,</span><br><span class="language-javascript">          <span class="hljs-attr">display</span>:<span class="hljs-string">&#x27;block&#x27;</span></span><br><span class="language-javascript">        &#125;</span><br><span class="language-javascript">      &#125;,</span><br><span class="language-javascript">      <span class="hljs-attr">methods</span>: &#123;</span><br><span class="language-javascript">        <span class="hljs-title function_">xxxs</span>(<span class="hljs-params"></span>)&#123;</span><br><span class="language-javascript">          <span class="hljs-variable language_">this</span>.<span class="hljs-property">person</span>.<span class="hljs-property">name</span> = <span class="hljs-string">&#x27;222&#x27;</span></span><br><span class="language-javascript">          <span class="hljs-variable language_">this</span>.<span class="hljs-property">msg2</span> = <span class="hljs-string">&#x27;&lt;a href=&quot;javascript:void(0);&quot;&gt;html指令2&lt;/a&gt;&#x27;</span></span><br><span class="language-javascript">          <span class="hljs-variable language_">this</span>.<span class="hljs-property">msg</span> = <span class="hljs-string">&#x27;model dire222&#x27;</span></span><br><span class="language-javascript">        &#125;</span><br><span class="language-javascript">      &#125;</span><br><span class="language-javascript">    &#125;)</span><br><span class="language-javascript">  </span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">body</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">html</span>&gt;</span><br><br></code></pre></td></tr></table></figure>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/vue/" class="category-chain-item">vue</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/vue/" class="print-no-link">#vue</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>vue2手写实现</div>
+      <div>http://arch94.github.io/2023/08/30/vue2手写实现/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Arch Sun</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年8月30日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/08/29/Taro/" title="Taro技术分析">
+                        <span class="hidden-mobile">Taro技术分析</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
